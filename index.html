@@ -1,0 +1,94 @@
+<!-- сообщаем браузеру, как обрабатывать страницу -->
+<!DOCTYPE html>
+
+<!-- Оболочка страницы, язык содержимого -->
+<html lang="ru">
+
+<!-- Заголовок страницы, контейнер для других важных данных(не отображается) -->
+
+<head>
+
+	<!-- Заголовок в браузере -->
+	<title>RotorHazard Results Viewer</title>
+
+	<!-- Подключаем CSS -->
+	<link rel="stylesheet" href="css/style.css" />
+
+	<!-- Кодировка страницы -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon16.ico">
+	<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon16.ico">
+	<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon16.ico">
+	<link rel="manifest" href="/site.webmanifest">
+
+
+</head>
+
+<!-- Отображаемое тело страницы -->
+
+<body>
+	<div class="wrapper">
+		<div class="main">
+			<div class="main-tittle">
+				<div class="main-tittle__container _container">
+					<h1>RotorHazard Results Viewer</h1>
+				</div>
+			</div>
+			<button class="main-tittle__button _button">Показать</button>
+			<div class="main-subtittle">
+				<p>или</p>
+				<p>выберите свой ...Results.JSON</p>
+			</div>
+			<form class="main-form">
+				<div class="main-form__container _container">
+					<input class="main-form__file" type="file" id="main-file">
+					<label class="main-form__label" for="main-file">
+						<span>Выберите файл</span>
+					</label>
+				</div>
+				<button class="main-form__button _button">Загрузить</button>
+			</form>
+			<div class="class-switch-buttons">
+				<div class="class-switch-buttons__container _container _buttons-wrapper"></div>
+
+			</div>
+			<div class="buttons">
+				<div class="buttons__container _container _buttons-wrapper">
+					<button class="buttons__pilots _button">Пилоты</button>
+					<button class="buttons__leaderboard _button">Лидерборд</button>
+					<button class="buttons__rounds _button">Раунды</button>
+				</div>
+			</div>
+			<div class="tabs-wrapper">
+
+
+
+			</div>
+
+
+
+
+			<form class="pilots-vs-form" id="pilots-vs-form" action="#" method="GET">
+			</form>
+
+			<div class="language">
+				<a href="/index_en.html" class="language__EN">
+					<img src="/assets/img/en.png" alt="EN">
+				</a>
+			</div>
+
+			<footer class="author">
+				<div class="author__container _container">
+					<div class="author__version">3.2.1(28.04.25)</div>
+					<a href="http://t.me/sharikov_stepan" target="_blank" class="author__text">by BeeHolder</a>
+				</div>
+
+			</footer>
+		</div>
+	</div>
+	<script src="js/script.js"></script>
+</body>
+
+</html>
