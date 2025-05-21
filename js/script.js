@@ -25,7 +25,7 @@ fetch('https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/files
     console.log("Список файлов:", data.files);
     // Пример: загрузить первый файл из списка
     if (data.files.length > 0) {
-      fetch(https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${data.files[0]})
+      fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${data.files[0]}`)
         .then(response => response.json())
         .then(jsonData => console.log("Данные файла:", jsonData));
     }
