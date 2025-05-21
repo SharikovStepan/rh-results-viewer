@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RotorHazard Results Viewer
 
 A static web application that visualizes lap timing data exported from RotorHazard's Results.json.
@@ -62,3 +63,4 @@ Feel free to contact me with any ideas.
 ## License
 
 [MIT](LICENSE)
+>>>>>>> 3926d66519779e3a5c66191cfa00f4f8e317388e
