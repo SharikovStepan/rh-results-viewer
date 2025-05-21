@@ -17,6 +17,24 @@ if (touchZapros.matches) {			//Анимация кнопок на тач экр�
 	})
 }
 
+
+
+fetch('https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/files.json')
+  .then(response => response.json())
+  .then(data => {
+    console.log("Список файлов:", data.files);
+    // Пример: загрузить первый файл из списка
+    if (data.files.length > 0) {
+      fetch(https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${data.files[0]})
+        .then(response => response.json())
+        .then(jsonData => console.log("Данные файла:", jsonData));
+    }
+  });
+
+
+
+
+
 let textStrings;
 const language = document.querySelector('html').getAttribute('lang')
 if (language == 'ru') {
