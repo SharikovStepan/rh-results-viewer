@@ -237,7 +237,7 @@ let parsedOK = false; // Флаг успешного парсинга файла
 
 
 setTimeout(async () => {
-	mainObj = await fetch('/results.jsons/1.json')
+	mainObj = await fetch('./results.jsons/1.json')
 		.then(response => response.json())
 
 
