@@ -853,6 +853,7 @@ function startFileView(fileType, fileName) {
 
 		const lastFileElement = document.querySelector('.last-file')
 		const dateFilesElement = document.querySelector('.date-files')
+		const calendarElement = document.querySelector('.calendar')
 
 
 		if (fileType == 'load') {
