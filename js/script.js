@@ -221,12 +221,6 @@ if (touchZapros.matches) {			//Анимация кнопок на тач экр�
 			setTimeout(() => {
 				event.target.classList.remove('_active-animation');///
 			}, 100);
-		} else if (event.target.closest('.pseudo-buttsson')) {
-			const pseudoButton = event.target.closest('.pseudo-button')
-			pseudoButton.classList.add('_active-animation');
-			setTimeout(() => {
-				pseudoButton.classList.remove('_active-animation');///
-			}, 100);
 		}
 	})
 }

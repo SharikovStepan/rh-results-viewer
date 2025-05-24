@@ -584,9 +584,9 @@ body {
 		height: 85px;
 
 		&._active {
-			border: 1px solid $color-akcent2 !important;
+			border: 1px solid $color-akcent2;
 			// background-color: $color-akcent2;
-			box-shadow: 0px 0px 15px $color-akcent2, 0px 0px 20px $color-akcent2 inset !important;
+			box-shadow: 0px 0px 15px $color-akcent2, 0px 0px 20px $color-akcent2 inset;
 		}
 
 		&._hidden {
@@ -597,33 +597,12 @@ body {
 			pointer-events: none;
 		}
 
-		@media(hover:hover) {
-			&:hover {
-				border: 1px solid $color-akcent2;
-				box-shadow: 0px 0px 5px $color-akcent2, 0px 0px 0px $color-akcent2 inset;
-			}
 
-			&:active {
-				transition: all .15s ease;
-				border: 1px solid $color-akcent2;
-				box-shadow: 0px 0px 15px $color-akcent2, 0px 0px 5px $color-akcent2 inset;
-			}
+		&:hover {
+			border: 1px solid $color-akcent2;
+			box-shadow: 0px 0px 5px $color-akcent2, 0px 0px 0px $color-akcent2 inset;
 		}
 
-		@media(hover:none) {
-
-			&._active-animation {
-				transition: all .15s ease;
-				border: 1px solid $color-akcent2;
-				box-shadow: 0px 0px 10px $color-akcent2, 0px 0px 5px $color-akcent2 inset;
-			}
-
-			&:active {
-				transition: all .15s ease;
-				border: 1px solid $color-akcent2;
-				box-shadow: 0px 0px 10px $color-akcent2, 0px 0px 5px $color-akcent2 inset;
-			}
-		}
 	}
 
 	&__file-name {
@@ -832,33 +811,11 @@ body {
 			will-change: transform;
 
 
-			@media(hover:hover) {
-				&:hover {
-					box-shadow: 0px 0px 10px $color-akcent2;
-					background-color: #66fcf2c9;
-				}
-
-				&:active {
-					transition: all .15s ease;
-					box-shadow: 0px 0px 15px $color-akcent2;
-					transform: scale(0.98);
-				}
+			&:hover {
+				box-shadow: 0px 0px 10px $color-akcent2;
+				background-color: #66fcf2c9;
 			}
 
-			@media(hover:none) {
-				&._active-animating {
-					transition: all .15s ease;
-					box-shadow: 0px 0px 15px $color-akcent2;
-					transform: scale(0.98);
-				}
-
-				&:active {
-					transition: all .15s ease;
-					box-shadow: 0px 0px 15px $color-akcent2;
-					transform: scale(0.98);
-
-				}
-			}
 		}
 	}
 

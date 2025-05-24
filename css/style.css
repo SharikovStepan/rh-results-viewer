@@ -606,9 +606,9 @@ body._lock {
   height: 85px;
 }
 .file__item._active {
-  border: 1px solid #66fcf1 !important;
-  -webkit-box-shadow: 0px 0px 15px #66fcf1, 0px 0px 20px #66fcf1 inset !important;
-          box-shadow: 0px 0px 15px #66fcf1, 0px 0px 20px #66fcf1 inset !important;
+  border: 1px solid #66fcf1;
+  -webkit-box-shadow: 0px 0px 15px #66fcf1, 0px 0px 20px #66fcf1 inset;
+          box-shadow: 0px 0px 15px #66fcf1, 0px 0px 20px #66fcf1 inset;
 }
 .file__item._hidden {
   opacity: 0;
@@ -616,35 +616,10 @@ body._lock {
 .file__item._no-event {
   pointer-events: none;
 }
-@media (hover: hover) {
-  .file__item:hover {
-    border: 1px solid #66fcf1;
-    -webkit-box-shadow: 0px 0px 5px #66fcf1, 0px 0px 0px #66fcf1 inset;
-            box-shadow: 0px 0px 5px #66fcf1, 0px 0px 0px #66fcf1 inset;
-  }
-  .file__item:active {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    border: 1px solid #66fcf1;
-    -webkit-box-shadow: 0px 0px 15px #66fcf1, 0px 0px 5px #66fcf1 inset;
-            box-shadow: 0px 0px 15px #66fcf1, 0px 0px 5px #66fcf1 inset;
-  }
-}
-@media (hover: none) {
-  .file__item._active-animation {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    border: 1px solid #66fcf1;
-    -webkit-box-shadow: 0px 0px 10px #66fcf1, 0px 0px 5px #66fcf1 inset;
-            box-shadow: 0px 0px 10px #66fcf1, 0px 0px 5px #66fcf1 inset;
-  }
-  .file__item:active {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    border: 1px solid #66fcf1;
-    -webkit-box-shadow: 0px 0px 10px #66fcf1, 0px 0px 5px #66fcf1 inset;
-            box-shadow: 0px 0px 10px #66fcf1, 0px 0px 5px #66fcf1 inset;
-  }
+.file__item:hover {
+  border: 1px solid #66fcf1;
+  -webkit-box-shadow: 0px 0px 5px #66fcf1, 0px 0px 0px #66fcf1 inset;
+          box-shadow: 0px 0px 5px #66fcf1, 0px 0px 0px #66fcf1 inset;
 }
 .file__file-name {
   display: -webkit-box;
@@ -870,41 +845,10 @@ body._lock {
   transition: all 0.3s ease;
   will-change: transform;
 }
-@media (hover: hover) {
-  .calendar__day._day__file:hover {
-    -webkit-box-shadow: 0px 0px 10px #66fcf1;
-            box-shadow: 0px 0px 10px #66fcf1;
-    background-color: rgba(102, 252, 242, 0.7882352941);
-  }
-  .calendar__day._day__file:active {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    -webkit-box-shadow: 0px 0px 15px #66fcf1;
-            box-shadow: 0px 0px 15px #66fcf1;
-    -webkit-transform: scale(0.98);
-        -ms-transform: scale(0.98);
-            transform: scale(0.98);
-  }
-}
-@media (hover: none) {
-  .calendar__day._day__file._active-animating {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    -webkit-box-shadow: 0px 0px 15px #66fcf1;
-            box-shadow: 0px 0px 15px #66fcf1;
-    -webkit-transform: scale(0.98);
-        -ms-transform: scale(0.98);
-            transform: scale(0.98);
-  }
-  .calendar__day._day__file:active {
-    -webkit-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-    -webkit-box-shadow: 0px 0px 15px #66fcf1;
-            box-shadow: 0px 0px 15px #66fcf1;
-    -webkit-transform: scale(0.98);
-        -ms-transform: scale(0.98);
-            transform: scale(0.98);
-  }
+.calendar__day._day__file:hover {
+  -webkit-box-shadow: 0px 0px 10px #66fcf1;
+          box-shadow: 0px 0px 10px #66fcf1;
+  background-color: rgba(102, 252, 242, 0.7882352941);
 }
 
 ._hidden-right {
