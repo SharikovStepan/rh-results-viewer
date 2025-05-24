@@ -594,7 +594,7 @@ let parsedOK = false; // Флаг успешного парсинга файла
 
 //////////////////////////////////////////////////
 
-
+/*
 fetch('files.json')
 	.then(response => response.json())
 	.then(data => {
@@ -606,7 +606,7 @@ fetch('files.json')
 				.then(jsonData => console.log("Данные файла:", jsonData));
 		}
 	});
-
+*/		//Лишний fetch удален в метро
 
 
 async function lastFileUpload() {
@@ -1009,7 +1009,7 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 
 			if (CONSOLE_DEBUG) console.log('top', firstTimePosition - mainTimePosition + 10 + 5);
 
-			mainTime.style.top = `${firstTimePosition - mainTimePosition + 10 + 5} px`
+			mainTime.style.top = `${firstTimePosition - mainTimePosition + 10 + 5}px`
 		}
 
 		spoilerButtonAnimation(e.target);
@@ -1091,7 +1091,7 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 				currentLap.classList.add('_hold')
 				const allLapsAreaHeight = allLapsArea.offsetHeight;
 				const allLapsAreaHeightScroll = allLapsArea.clientHeight;
-				allLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll} px`
+				allLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll}px`
 				allLapsArea.classList.add('_lock');
 				graphTouchFlag = true;
 			}
@@ -1465,7 +1465,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 	const pilotsPadding = parseInt(getComputedStyle(pilotsElement).paddingRight);
 	const scrollWidth = pilotsElement.offsetWidth - pilotsElement.clientWidth
 
-	pilotsElement.style.paddingRight = `${pilotsPadding - scrollWidth} px`
+	pilotsElement.style.paddingRight = `${pilotsPadding - scrollWidth}px`
 
 
 
@@ -1570,11 +1570,11 @@ function goToRoundAction(round, heat, buttonPressed) {
 	roundPlayButton.addEventListener('click', function (e) {
 		const paragraph = roundPlayButton.firstElementChild;
 		if (roundPlayState == 'play') {
-			textChange(paragraph, `< p > ${textStrings.roundsTab.play}</ > `, 150);
+			textChange(paragraph, `<p>${textStrings.roundsTab.play}</p> `, 150);
 			pauseRound();
 			roundPlayState = 'pause';
 		} else if (roundPlayState == 'pause') {
-			textChange(paragraph, `< p > ${textStrings.roundsTab.pause}</ > `, 150);
+			textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p> `, 150);
 			startRound();
 			roundPlayState = 'play';
 
@@ -1597,7 +1597,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 			slider.classList.add('_no-event');
 
 			setTimeout(() => {
-				textChange(paragraph, `< p > ${textStrings.roundsTab.pause}</ > `, 250);
+				textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p> `, 250);
 			}, 300);
 			setTimeout(() => {
 				startRound();
@@ -1801,7 +1801,7 @@ function tabHeightChange(tabElement, tabItemsElement, firstState) {
 		const tabWidth = tabElement.offsetHeight;
 		const itemElementWidth = tabItemsElement.offsetHeight;
 
-		if (tabWidth > itemElementWidth || firstState) tabItemsElement.style.height = `${tabWidth + 20} px`
+		if (tabWidth > itemElementWidth || firstState) tabItemsElement.style.height = `${tabWidth + 20}px`
 
 	}, getTransitionDurationTime(tabElement));
 
@@ -2115,7 +2115,7 @@ function writePilotsHTML() {		// Рисуем страницу пилотов
 
 			pilotsVsInputLabel.classList.add('pilots-vs-form-input__label')
 			pilotsVsInputLabel.setAttribute('for', `${pilot.name} `)
-			pilotsVsInputLabel.innerHTML = `< p > ${textStrings.pilotsTab.vs}</ > <span class="label__span"></span>`
+			pilotsVsInputLabel.innerHTML = `<p> ${textStrings.pilotsTab.vs}</p><span class="label__span"></span>`
 			pilotsVsInputContainer.append(pilotsVsInputLabel, pilotsVsInput)
 
 
@@ -2250,7 +2250,7 @@ function pilotsVsActions(nameForFunctions1, nameForFunctions2) {
 			currentLap.classList.add('_hold')
 			const allLapsAreaHeight = pilotsVsAllLapsArea.offsetHeight;
 			const allLapsAreaHeightScroll = pilotsVsAllLapsArea.clientHeight;
-			pilotsVsAllLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll} px`
+			pilotsVsAllLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll}px`
 			pilotsVsAllLapsArea.classList.add('_lock');
 			graphTouchFlag = true;
 		}
@@ -2524,14 +2524,14 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		bestLapOtherElements.push(bestLapOtherElement);
 		bestConsecutiveOtherElements.push(bestConsecutiveOtherElement);
 
-		pilotsVsStatistic.bestLapOther.append(bestLapOtherElements[`${i - 1} `]);
-		pilotsVsStatistic.bestConsecutiveOther.append(bestConsecutiveOtherElements[`${i - 1} `]);
+		pilotsVsStatistic.bestLapOther.append(bestLapOtherElements[`${i - 1}`]);
+		pilotsVsStatistic.bestConsecutiveOther.append(bestConsecutiveOtherElements[`${i - 1}`]);
 	}
 
 
 	const pilotsVsArr = [nameToVs1, nameToVs2]
 
-	pilotsVs.tittleText.innerHTML = `< p class="pilots-vs_name1" > ${pilotsVsArr[0]}</ >
+	pilotsVs.tittleText.innerHTML = `<p class="pilots-vs_name1"> ${pilotsVsArr[0]}</p>
 	<p>vs</p>
 	<p class="pilots-vs_name2">${pilotsVsArr[1]}</p>`
 
@@ -2571,12 +2571,12 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		const startsElement = document.createElement('div')
 		const totalTimeElement = document.createElement('div')
 
-		bestLapElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - lap - ${index + 1} `)
-		bestConsecutiveElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - consecutive - ${index + 1} `)
-		averageElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_average - ${index + 1} `)
-		totalLapsElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_total - laps - ${index + 1} `)
-		startsElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_starts - ${index + 1} `)
-		totalTimeElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_total - time - ${index + 1} `)
+		bestLapElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-lap-${index + 1}`)
+		bestConsecutiveElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-consecutive-${index + 1}`)
+		averageElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_average-${index + 1}`)
+		totalLapsElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_total-laps-${index + 1}`)
+		startsElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_starts-${index + 1}`)
+		totalTimeElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_total-time-${index + 1}`)
 
 		bestLapElement.innerHTML = laps[0].lapTime
 		pilotFloatTimes.lapTime = lapTimeConverter(laps[0].lapTime, 'float');
@@ -2615,8 +2615,8 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 			const bestLapOtherItemElement = document.createElement('div');
 			const bestConsecutiveOtherItemElement = document.createElement('div');
 
-			bestLapOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - lap - ${index + 1} `)
-			bestConsecutiveOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - consecutive - ${index + 1} `)
+			bestLapOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-lap-${index + 1}`)
+			bestConsecutiveOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-consecutive-${index + 1}`)
 			try {
 				bestLapOtherItemElement.innerHTML = `${laps[i].lapTime} `
 			} catch (error) {
@@ -2628,8 +2628,8 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 				bestConsecutiveOtherItemElement.innerHTML = `-: --.--- `
 			}
 
-			bestLapOtherElements[`${i - 1} `].append(bestLapOtherItemElement);
-			bestConsecutiveOtherElements[`${i - 1} `].append(bestConsecutiveOtherItemElement);
+			bestLapOtherElements[`${i - 1}`].append(bestLapOtherItemElement);
+			bestConsecutiveOtherElements[`${i - 1}`].append(bestConsecutiveOtherItemElement);
 		}
 
 
@@ -2861,12 +2861,12 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 
 	}
 
-	pilotsVsAllLaps.slider.style.gridColumn = `span ${lapsTimeData.length + 1} `;
-	pilotsVsAllLaps.averageLine.style.gridColumn = `span ${lapsTimeData.length + 1} `
-	pilotsVsAllLaps.maxLine.style.gridColumn = `span ${lapsTimeData.length + 1} `
+	pilotsVsAllLaps.slider.style.gridColumn = `<span>${lapsTimeData.length + 1}</span>`;
+	pilotsVsAllLaps.averageLine.style.gridColumn = `<span>${lapsTimeData.length + 1}</span>`
+	pilotsVsAllLaps.maxLine.style.gridColumn = `<span>${lapsTimeData.length + 1}</span>`
 
-	pilotsVsAllLaps.averageLine.innerHTML = `< span > ${averageLineString}</ > `
-	pilotsVsAllLaps.maxLine.innerHTML = `< span > ${maxLineString}</ > `
+	pilotsVsAllLaps.averageLine.innerHTML = `<span>${averageLineString}</span>`
+	pilotsVsAllLaps.maxLine.innerHTML = `<span>${maxLineString}</span>`
 
 
 	pilotsVsAllLaps.laps.append(pilotsVsAllLaps.slider, pilotsVsAllLaps.averageLine, pilotsVsAllLaps.maxLine, pilotsVsAllLaps.pseudoLap);
@@ -2896,7 +2896,7 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		})
 
 		svg = `
-		< span ></ >
+		<span></span>
 			<svg class=pilots-vs__lap-graph preserveAspectRatio="none" viewbox="0 0 8 280">
 				<circle class=pilots-vs__lap-graph-obj fill=${colors[0]} r="${circleRadius[0]}" cx="4" cy="${svgPostitions[0]}" />
 				<circle class=pilots-vs__lap-graph-obj fill=${colors[1]} r="${circleRadius[1]}" cx="4" cy="${svgPostitions[1]}" />
@@ -3081,8 +3081,8 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 	inRound.roundNum.classList.add('in-round__roundNum')
 	inRound.heatNum.classList.add('in-round__heatNum')
 
-	inRound.tittleName.innerHTML = `< p > ${name}</ > `			//Имя 
-	inRound.tittleRound.innerHTML = `< p > ${lap.round}</ > `			//номер раунда
+	inRound.tittleName.innerHTML = `<p>${name}</p>`			//Имя 
+	inRound.tittleRound.innerHTML = `<p>${lap.round}</p>`			//номер раунда
 
 	inRound.roundNum.setAttribute("value", `${lap.roundId} `)
 	inRound.heatNum.setAttribute("value", `${lap.heatId} `)
@@ -3121,10 +3121,10 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 			roundNode.classList.add('in-round__lap-node')
 			roundColumn.classList.add('in-round__lap-column', '_hidden-columns')
 
-			roundLap.innerHTML = `< span > ${textStrings.inRoundTab.lap} ${i + 1}</> `
+			roundLap.innerHTML = `<span>${textStrings.inRoundTab.lap} ${i + 1}</span>`
 			roundNode.innerHTML = laps[i].lapTime;			//номер круга
 
-			roundColumn.style.height = `${(lapHeights[i] * heightStep) - 10}% `
+			roundColumn.style.height = `${(lapHeights[i] * heightStep) - 10}%`
 
 			roundLap.append(roundColumn);
 			inRound.areaLaps.append(roundLap, roundNode);
@@ -3161,7 +3161,7 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 		inRound.lapTime.append(timeText, timeValue)
 	} else if (akcentLap.length > 1) {				//выбрали круги подря
 		inRound.lapCountText.innerHTML = textStrings.inRoundTab.lapsNum
-		inRound.lapCountValue.innerHTML = `${+akcentLap[0]} -${+akcentLap[akcentLap.length - 1]} `;
+		inRound.lapCountValue.innerHTML = `${+akcentLap[0]} -${+akcentLap[akcentLap.length - 1]}`;
 		for (let i = 0; i < akcentLap.length; i++) {
 			const timeText = document.createElement('div')
 			const timeValue = document.createElement('div')
@@ -3331,9 +3331,9 @@ function writeAllLapsHTML(name) {
 	allLaps.lapTimeValue.classList.add('all-laps__lap-time-value', '_stat-value');
 
 
-	allLaps.tittleText.innerHTML = `< p > ${name}</ > `			//Имя которое выбрали
-	allLaps.exitBtn.innerHTML = `< span ></ > `
-	allLaps.lapsArea.innerHTML = `< span ></ > `
+	allLaps.tittleText.innerHTML = `<p>${name}</p>`			//Имя которое выбрали
+	allLaps.exitBtn.innerHTML = `<span></span>`
+	allLaps.lapsArea.innerHTML = `<span></span>`
 
 	allLaps.minus.innerHTML = `- `
 	allLaps.buttonsTittle.innerHTML = textStrings.allLapsTab.scale
@@ -3372,8 +3372,8 @@ function writeAllLapsHTML(name) {
 
 	const lapsData = getLapsByName(name, heat, false);			//берем все круги
 
-	allLaps.slider.setAttribute("max", `${lapsData.length - 1} `);			//максимальные ползунковые движения
-	allLaps.averageLine.innerHTML = `< span > ${averageLineValueString}</ > `			//значение полоски среднего круга
+	allLaps.slider.setAttribute("max", `${lapsData.length - 1}`);			//максимальные ползунковые движения
+	allLaps.averageLine.innerHTML = `<span>${averageLineValueString}</span>`			//значение полоски среднего круга
 
 	const lapsDataSorted = getLapsByName(name, heat, true);			//берем все круги сортированные, чтобы найти лучший
 	const bestId = lapsDataSorted[0].lapId;			//id лучшего круга
@@ -3390,7 +3390,7 @@ function writeAllLapsHTML(name) {
 
 	const maxLinefloat = lapTimeConverter(averageLineValueString, 'float') * 2;
 	const maxLineString = lapTimeConverter(maxLinefloat, 'string')
-	allLaps.maxLine.innerHTML = `< span > ${maxLineString}</ > `			//значени полоски максимального круга. Не максимального, а 2x среднего
+	allLaps.maxLine.innerHTML = `<span>${maxLineString}</span>`			//значени полоски максимального круга. Не максимального, а 2x среднего
 
 	const averageLineValueFloat = lapTimeConverter(averageLineValueString, 'float')			//переводим среднее время во float
 
@@ -3421,7 +3421,7 @@ function writeAllLapsHTML(name) {
 		}
 
 		const svg = `
-		< span ></ >
+		<span></span>
 			<svg class=all-laps__lap-graph preserveAspectRatio="none" viewbox="0 0 8 280">
 				<circle class=all-laps__lap-graph-obj fill=${color} r="4" cx="4" cy="${startSvg}" />
 			</svg>
@@ -3680,7 +3680,7 @@ function writeLeaderboardHTML() {
 		lapStroke.name.classList.add('leaderboard-lap__name', '_stat-value');
 		lapStroke.round.classList.add('leaderboard-lap__round', '_stat-value');
 		lapStroke.time.classList.add('leaderboard-lap__time', '_button-time');
-		lapStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
+		lapStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
 		lapStroke.round.innerHTML = element.lapRound;
 		lapStroke.time.innerHTML = time;
 
@@ -3702,7 +3702,7 @@ function writeLeaderboardHTML() {
 		consecutiveStroke.name.classList.add('leaderboard-consecutive__name', '_stat-value');
 		consecutiveStroke.round.classList.add('leaderboard-consecutive__round', '_stat-value');
 		consecutiveStroke.time.classList.add('leaderboard-consecutive__time', '_button-time');
-		consecutiveStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
+		consecutiveStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
 		consecutiveStroke.round.innerHTML = element.consecutiveRound;
 		consecutiveStroke.time.innerHTML = time;
 		consecutiveStroke.item.append(consecutiveStroke.name, consecutiveStroke.round, consecutiveStroke.time)
@@ -3723,7 +3723,7 @@ function writeLeaderboardHTML() {
 		countStroke.name.classList.add('leaderboard-count__name', '_stat-value');
 		countStroke.starts.classList.add('leaderboard-count__starts', '_stat-value');
 		countStroke.count.classList.add('leaderboard-count__count', '_stat-value');
-		countStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
+		countStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
 		countStroke.starts.innerHTML = element.countStarts;
 		countStroke.count.innerHTML = element.countLaps;
 		countStroke.item.append(countStroke.name, countStroke.starts, countStroke.count)
@@ -3748,7 +3748,7 @@ function writeLeaderboardHTML() {
 		averageStroke.laps.classList.add('leaderboard-average__laps', '_stat-value');
 		averageStroke.time.classList.add('leaderboard-average__average', '_stat-value');
 
-		averageStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
+		averageStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
 		averageStroke.starts.innerHTML = element.averageStarts;
 		averageStroke.laps.innerHTML = element.averageLaps;
 		averageStroke.time.innerHTML = time;
