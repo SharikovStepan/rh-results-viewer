@@ -250,6 +250,7 @@ const dateFilesItemsElement = document.querySelector('.date-files__items')
 dateFilesItemsElement.addEventListener('click', function (e) {
 	if (e.target.closest('.file__item')) {
 		const fileItemElement = e.target.closest('.file__item');
+
 		const fileName = fileItemElement.id
 		const dateFileElements = document.querySelectorAll('.file__item')
 
@@ -258,6 +259,9 @@ dateFilesItemsElement.addEventListener('click', function (e) {
 				elem.classList.add('_hidden', '_no-event');
 			}
 		})
+
+		const calendarElement = document.querySelector('.calendar')
+		calendarElement.classList.add('_hidden');
 
 		fileItemElement.classList.add('_active');
 		dateFileUpload(fileName);
@@ -848,11 +852,8 @@ function startFileView(fileType, fileName) {
 		const labelWidth = mainForm.label.offsetWidth;			//ширина label чтобы не торчали края
 
 		const lastFileElement = document.querySelector('.last-file')
-		const calendarElement = document.querySelector('.calendar')
 		const dateFilesElement = document.querySelector('.date-files')
 
-
-		calendarElement.classList.add('_hidden');
 
 		if (fileType == 'load') {
 			lastFileElement.classList.add('_hidden')
