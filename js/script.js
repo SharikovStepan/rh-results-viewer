@@ -1,46 +1,17 @@
 const touchZapros = window.matchMedia('((hover: none) and (pointer: coarse))');
 const consecutivesLenghtFinals = 3;
 let consecutivesCount = 3;
-
 const CONSOLE_DEBUG = false;
-
-
-
-if (touchZapros.matches) {			//Анимация кнопок на тач экранах
-	document.addEventListener('click', function (event) {
-		if (event.target.closest('button')) {
-			event.target.classList.add('_active-animation');
-			setTimeout(() => {
-				event.target.classList.remove('_active-animation');///
-			}, 100);
-		}
-	})
-}
-
-
-
-fetch('https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/files.json')
-	.then(response => response.json())
-	.then(data => {
-		console.log("Список файлов:", data.files);
-		// Пример: загрузить первый файл из списка
-		if (data.files.length > 0) {
-			fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${data.files[0]}`)
-				.then(response => response.json())
-				.then(jsonData => console.log("Данные файла:", jsonData));
-		}
-	});
-
-
-
-
 
 let textStrings;
 const language = document.querySelector('html').getAttribute('lang')
 if (language == 'ru') {
 
 	textStrings = {
+		monthsNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
 		event: 'Событие',
+		date: 'Дата',
+		time: 'Время',
 		show: 'показать',
 		error: 'Ошибка файла',
 		choose: 'Выберите файл',
@@ -140,7 +111,10 @@ if (language == 'ru') {
 } else if (language == 'en') {
 
 	textStrings = {
+		monthsNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 		event: 'Event',
+		date: 'Date',
+		time: 'Time',
 		show: 'Show',
 		error: 'File error',
 		choose: 'Choose file',
@@ -240,7 +214,354 @@ if (language == 'ru') {
 }
 
 
-const localFileButton = document.querySelector('.main-tittle__button');
+if (touchZapros.matches) {			//Анимация кнопок на тач экранах
+	document.addEventListener('click', function (event) {
+		if (event.target.closest('button')) {
+			event.target.classList.add('_active-animation');
+			setTimeout(() => {
+				event.target.classList.remove('_active-animation');///
+			}, 100);
+		} else if (event.target.closest('.pseudo-buttsson')) {
+			const pseudoButton = event.target.closest('.pseudo-button')
+			pseudoButton.classList.add('_active-animation');
+			setTimeout(() => {
+				pseudoButton.classList.remove('_active-animation');///
+			}, 100);
+		}
+	})
+}
+
+
+
+
+//Календарь///////////////////////////
+let currentMonth = new Date();
+const daysElement = document.querySelector('.calendar__days')
+
+
+daysElement.addEventListener('click', function (e) {
+
+	const day = e.target.closest('.calendar__day')
+
+	if (e.target == day && day.classList.contains('_day__file')) {
+		mainForm.subtittle.classList.add('_hidden')
+		mainForm.label.classList.add('_hidden')
+		const dateStr = e.target.id;
+		getDayFiles(dateStr)
+		e.target.classList.add('_active')
+	}
+})
+const dateFilesItemsElement = document.querySelector('.date-files__items')
+
+dateFilesItemsElement.addEventListener('click', function (e) {
+	if (e.target.closest('.file__item')) {
+		const fileItemElement = e.target.closest('.file__item');
+		const fileName = fileItemElement.id
+		const dateFileElements = document.querySelectorAll('.file__item')
+
+		dateFileElements.forEach(elem => {
+			if (elem != fileItemElement) {
+				elem.classList.add('_hidden', '_no-event');
+			}
+		})
+
+		fileItemElement.classList.add('_active');
+		dateFileUpload(fileName);
+	}
+})
+
+
+function calendarRender() {
+	const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
+	const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)
+
+
+	console.log('firstDay', firstDay);
+	console.log('lastDay', lastDay);
+
+
+
+	const monthHeaderElement = document.querySelector('.calendar__current-month')
+
+	monthHeaderElement.innerHTML = `${textStrings.monthsNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`
+
+
+	// const nextMonthDays = 6 - lastDay.getDay() + ((firstDay.getDay() <= 4) && (firstDay.getDay() != 0) ? 1 + 7 : 1)
+
+	const prevMonthDays = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+	const totalDays = 42;
+	const nextMonthDays = totalDays - lastDay.getDate() - prevMonthDays;
+
+
+
+
+
+	console.log('prevMonthDays', prevMonthDays);
+	console.log('totalDays', totalDays);
+	console.log('firstDay.getDay()', firstDay.getDay());
+	console.log('mextMonthDays', nextMonthDays);
+
+
+
+	const today = new Date();
+
+
+	daysElement.innerHTML = '';
+
+	for (let i = 1; i <= totalDays; i++) {
+		const dayElement = document.createElement('button');
+		dayElement.classList.add('calendar__day')
+
+		let dayNumber, isCurrentMonth;
+
+		if (i <= prevMonthDays) {
+			dayNumber = new Date(
+				currentMonth.getFullYear(),
+				currentMonth.getMonth(),
+				0
+			).getDate() - prevMonthDays + i;
+			isCurrentMonth = false;
+			console.log('dayNumberPrev', dayNumber);
+
+		} else if (i > prevMonthDays + lastDay.getDate()) {
+			dayNumber = i - (prevMonthDays + lastDay.getDate())
+			isCurrentMonth = false;
+			console.log('dayNumberLast', dayNumber);
+		} else {
+			dayNumber = i - prevMonthDays
+			isCurrentMonth = true;
+		}
+
+		if (currentMonth.getFullYear() == today.getFullYear() &&
+			currentMonth.getMonth() == today.getMonth() &&
+			dayNumber == today.getDate()) {
+			dayElement.classList.add('_day__today')
+
+		}
+
+
+		let isHaveFiles;
+		filesJson.forEach(file => {
+			if (file.year == currentMonth.getFullYear() &&
+				file.month == currentMonth.getMonth() &&
+				file.day == dayNumber &&
+				isCurrentMonth) {
+				console.log('СОВПАДЕНИЕ', file.fileName);
+				isHaveFiles = true;
+				dayElement.classList.add('_day__file');
+			}
+		})
+
+		const dateStr = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${dayNumber}`;
+
+
+		if (isHaveFiles) dayElement.id = dateStr;
+
+
+
+		if (!isCurrentMonth) {
+			dayElement.classList.add('_day__other-month')
+		}
+		dayElement.innerHTML = dayNumber;
+
+		daysElement.append(dayElement);
+
+	}
+
+}
+
+
+const prevButton = document.querySelector('.calendar__prev-month')
+const nextButton = document.querySelector('.calendar__next-month')
+
+async function moveMonth(start, stop) {
+	prevButton.classList.add('_no-event');
+	nextButton.classList.add('_no-event');
+
+	const dateFilesElement = document.querySelector('.date-files__items')
+	dateFilesElement.classList.add('_hidden')
+
+	const monthHeaderElement = document.querySelector('.calendar__current-month')
+
+	monthHeaderElement.classList.add(`_hidden-${start}`);
+	daysElement.classList.add(`_hidden-${start}`);
+
+	await new Promise(resolve => {
+		daysElement.addEventListener('transitionend', resolve, { once: true })
+	})
+
+	daysElement.style.transition = 'none';
+	monthHeaderElement.style.transition = 'none';
+	daysElement.classList.remove(`_hidden-${start}`);
+	monthHeaderElement.classList.remove(`_hidden-${start}`);
+	monthHeaderElement.classList.add(`_hidden-${stop}`);
+	daysElement.classList.add(`_hidden-${stop}`);
+
+	await new Promise(resolve => requestAnimationFrame(resolve))
+
+	if (start == 'right') {
+		currentMonth.setMonth(currentMonth.getMonth() - 1)
+	} else if (start == 'left') {
+		currentMonth.setMonth(currentMonth.getMonth() + 1)
+	}
+	calendarRender();
+
+	await new Promise(resolve => requestAnimationFrame(resolve))
+
+	dateFilesElement.innerHTML = ''
+	daysElement.style.transition = '';
+	monthHeaderElement.style.transition = '';
+	monthHeaderElement.classList.remove(`_hidden-${stop}`);
+	daysElement.classList.remove(`_hidden-${stop}`);
+	prevButton.classList.remove('_no-event');
+	nextButton.classList.remove('_no-event');
+}
+
+prevButton.addEventListener('click', () => moveMonth('right', 'left'))
+nextButton.addEventListener('click', () => moveMonth('left', 'right'))
+
+
+//////////////////////////////////////////
+
+
+//Файлы для календаря//////////////
+
+let filesJson = [];
+
+async function filesJsonLoad() {
+	let responseDataFiles;
+	try {
+		const response = await fetch('files.json')
+		if (!response.ok) throw new Error("Ошибка загрузки");
+		const responseData = await response.json();
+		responseDataFiles = responseData.files;
+
+		responseDataFiles.forEach(file => {			///Собираем объект всех файлов из репозитория
+			const obj = {};
+			const [datePart, timePart, displayName] = file.split('_');
+			const isoString = `${datePart}T${timePart.replace('-', ':')}`;
+			const date = new Date(isoString);
+			obj.displayName = displayName.split('.')[0];
+			obj.date = date;
+			obj.fileName = file;
+			obj.year = date.getFullYear();
+			obj.month = date.getMonth();
+			obj.monthName = textStrings.monthsNames[date.getMonth()];
+			obj.day = date.getDate();
+			obj.hours = date.getHours();
+			obj.minutes = date.getMinutes();
+			filesJson.push(obj);
+		});
+
+		const lastFileNameElement = document.querySelector('.last-file__file-name-value')
+		const lastFileDateElement = document.querySelector('.last-file__date-value')
+		const lastFileTimeElement = document.querySelector('.last-file__time-value')
+
+		const lastFile = filesJson[filesJson.length - 1]
+		lastFileNameElement.innerHTML = lastFile.displayName;
+		lastFileDateElement.innerHTML = `${lastFile.day} ${lastFile.monthName} ${lastFile.year}`
+		lastFileTimeElement.innerHTML = `${lastFile.hours}:${lastFile.minutes}`
+
+		calendarRender();
+	} catch (error) {
+		console.error("Не удалось загрузить файл:", error);
+	}
+}
+
+filesJsonLoad();
+
+
+
+function getDayFiles(date) {
+	const dayButtons = document.querySelectorAll('.calendar__day')
+	dayButtons.forEach(button => {
+		if (button.classList.contains('_active')) button.classList.remove('_active')
+	})
+
+	const dateFilesElement = document.querySelector('.date-files__items')
+	if (!dateFilesElement.classList.contains('_hidden')) dateFilesElement.classList.add('_hidden')
+
+	setTimeout(() => {
+		dateFilesElement.innerHTML = '';
+
+		filesJson.forEach(file => {
+			const fileDateArr = `${file.year}-${file.month}-${file.day}`;
+
+			if (date == fileDateArr) {
+
+				const fileItemElement = {
+					item: document.createElement('div'),
+					name: document.createElement('div'),
+					nameTittle: document.createElement('div'),
+					nameValue: document.createElement('div'),
+					date: document.createElement('div'),
+					dateTittle: document.createElement('div'),
+					dateValue: document.createElement('div'),
+					time: document.createElement('div'),
+					timeTittle: document.createElement('div'),
+					timeValue: document.createElement('div'),
+				}
+
+				fileItemElement.item.classList.add('file__item', 'pseudo-button')
+				fileItemElement.item.id = file.fileName;
+				fileItemElement.name.classList.add('file__file-name')
+				fileItemElement.nameTittle.classList.add('file__file-name-tittle')
+				fileItemElement.nameValue.classList.add('file__file-name-value')
+				fileItemElement.date.classList.add('file__date')
+				fileItemElement.dateTittle.classList.add('file__date-tittle')
+				fileItemElement.dateValue.classList.add('file__date-value')
+				fileItemElement.time.classList.add('file__time')
+				fileItemElement.timeTittle.classList.add('file__time-tittle')
+				fileItemElement.timeValue.classList.add('file__time-value')
+
+				fileItemElement.nameTittle.innerHTML = `${textStrings.event}:`
+				fileItemElement.nameValue.innerHTML = file.displayName
+
+				fileItemElement.dateTittle.innerHTML = `${textStrings.date}:`
+				fileItemElement.dateValue.innerHTML = `${file.day} ${file.monthName} ${file.year}`
+
+				fileItemElement.timeTittle.innerHTML = `${textStrings.time}:`
+				fileItemElement.timeValue.innerHTML = `${file.hours}:${file.minutes}`
+
+
+				fileItemElement.item.append(fileItemElement.name, fileItemElement.date, fileItemElement.time)
+				fileItemElement.name.append(fileItemElement.nameTittle, fileItemElement.nameValue)
+				fileItemElement.date.append(fileItemElement.dateTittle, fileItemElement.dateValue)
+				fileItemElement.time.append(fileItemElement.timeTittle, fileItemElement.timeValue)
+
+
+
+
+				dateFilesElement.append(fileItemElement.item)
+
+			}
+
+
+		})
+		setTimeout(() => {
+			dateFilesElement.classList.remove('_hidden')
+		}, 20);
+	}, 310);
+
+}
+
+
+async function dateFileUpload(fileName) {
+	const data = await fetch(`results.jsons/${fileName}`)
+	mainObj = await data.json();
+	console.log('fileNamefileNamefileNamefileName', fileName);
+
+	makeRaceClassButtons();
+
+	startFileView('date', fileName);
+}
+
+////////////////////////////
+
+
+
+const lastFileButton = document.querySelector('.last-file__item');
 
 let currentClass;   //Переменная класса
 let currentClassChoosed = false;   //Первый класс не выбран
@@ -251,39 +572,67 @@ let parsedOK = false; // Флаг успешного парсинга файла
 
 
 //////////////////////////////////////////////////////
-//СТАРТ!
 
 
-setTimeout(async () => {
-	mainObj = await fetch('./results.jsons/1.json')
-		.then(response => response.json())
+
+// setTimeout(async () => {
+// 	mainObj = await fetch('./results.jsons/1.json')
+// 		.then(response => response.json())
 
 
-	const day = getDateinfo('day');
-	const year = getDateinfo('year');
-	const time = getDateinfo('time');
+// 	const day = getDateinfo('day');
+// 	const year = getDateinfo('year');
+// 	const time = getDateinfo('time');
 
 
-	mainForm.tittle.innerHTML = `${textStrings.event} ${day} ${year} в ${time}, ${textStrings.show}?`
-	if (CONSOLE_DEBUG) console.log(mainObj);
+// 	mainForm.tittle.innerHTML = `${textStrings.event} ${day} ${year} в ${time}, ${textStrings.show}?`
+// 	if (CONSOLE_DEBUG) console.log(mainObj);
 
-}, 10);
+// }, 10);
 
 
 
 //////////////////////////////////////////////////
 
 
-localFileButton.addEventListener('click', function () {
+fetch('files.json')
+	.then(response => response.json())
+	.then(data => {
+		console.log("Список файлов:", data.files);
+
+		if (data.files.length > 0) {
+			fetch(`results.jsons/${data.files[data.files.length - 1]}`)
+				.then(response => response.json())
+				.then(jsonData => console.log("Данные файла:", jsonData));
+		}
+	});
+
+
+
+async function lastFileUpload() {
+	const data = await fetch(`results.jsons/${filesJson[filesJson.length - 1].fileName}`)
+	mainObj = await data.json();
+	console.log('MAIN OBJ', mainObj);
+
 	makeRaceClassButtons();
-	startFileView('local');
+
+	startFileView('local', filesJson[filesJson.length - 1].fileName);
+
+}
+
+
+
+
+lastFileButton.addEventListener('click', function () {
+	lastFileButton.classList.add('_active')
+	lastFileUpload();
 
 });
 
 
 
 const mainForm = {
-	tittle: document.querySelector('.main-tittle__container'),
+	tittle: document.querySelector('.main-tittle'),
 	form: document.querySelector('.main-form'),
 	input: document.querySelector('.main-form__file'),
 	label: document.querySelector('.main-form__label'),
@@ -436,14 +785,12 @@ function makeRaceClassButtons() {
 
 }
 
-function startFileView(fileType) {
+function startFileView(fileType, fileName) {
 
 	try {
-		const consecutivesFromFile = mainObj.consecutives_count;
-		consecutivesCount = consecutivesFromFile;
+		consecutivesCount = mainObj.consecutives_count;
 	} catch (error) {
 		if (CONSOLE_DEBUG) console.log('Не найдена информация о consecutives count');
-
 	}
 
 
@@ -498,41 +845,58 @@ function startFileView(fileType) {
 
 
 	if (fileType != 'classSwitch') {
-		const languageButton = document.querySelector('.language')
-		languageButton.classList.add('_hidden')
 
-
-		mainForm.tittle.classList.add('_hidden');			//Скрываем заголовок, чтобы поменять его на дату и время
-
-
-		const day = getDateinfo('day');
-		const year = getDateinfo('year');
-		const time = getDateinfo('time');
-
-
+		document.querySelector('.language').classList.add('_hidden')
 
 
 		const windowWidth = window.innerWidth;			// ширина окна, сколько надо проехаться кнопками за границу
 		const buttonWidth = mainForm.button.offsetWidth;			//ширина кнопки, чтобы не торчали края
 		const labelWidth = mainForm.label.offsetWidth;			//ширина label чтобы не торчали края
 
+		const lastFileElement = document.querySelector('.last-file')
+		const calendarElement = document.querySelector('.calendar')
+		const dateFilesElement = document.querySelector('.date-files')
+
+
+		calendarElement.classList.add('_hidden');
 
 		if (fileType == 'load') {
-			localFileButton.classList.add('_hidden')
+			lastFileElement.classList.add('_hidden')
 			mainForm.button.style.transition = 'all 1s ease';
 			mainForm.button.style.transform = `translate(${windowWidth / 2 + buttonWidth}px, 0px)`;			//едем
+			mainForm.label.style.transition = 'all 1s ease';
+			mainForm.label.style.transform = `translate(-${windowWidth / 2 + labelWidth}px, 0px)`;			//едем
+			mainForm.subtittle.classList.add('_hidden');
+			dateFilesElement.classList.add('_hidden')
+			setTimeout(() => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				})
+			}, 300);
 
 		} else if (fileType == 'local') {
+			dateFilesElement.classList.add('_hidden')
+			document.querySelector('.last-file__tittle').classList.add('_hidden')
+			lastFileButton.classList.add('_move')
 			mainForm.button.classList.remove('_ready');
-			localFileButton.style.transition = 'all 1s ease';
-			localFileButton.style.transform = `translate(${windowWidth / 2 + buttonWidth}px, 0px)`;			//едем
+			// lastFileButton.style.transition = 'transform 1s ease 0.3s, background-color 0.3s ease 0s'
+			// lastFileButton.style.transform = `translate(0px, ${-200}%)`;			//едем
+			mainForm.label.classList.add('_hidden')
 
+		} else if (fileType == 'date') {
+			document.querySelector('.last-file').classList.add('_hidden')
+			setTimeout(() => {
+				const dateFilesElement = document.querySelector('.date-files')
+				dateFilesElement.classList.add('_hidden')
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				})
+			}, 500);
 		}
 
-
-
-		mainForm.label.style.transition = 'all 1s ease';
-		mainForm.label.style.transform = `translate(-${windowWidth / 2 + labelWidth}px, 0px)`;			//едем
+		// mainForm.label.style.transition = 'all 1s ease';
 		mainForm.subtittle.classList.add('_hidden');
 
 
@@ -540,11 +904,32 @@ function startFileView(fileType) {
 
 
 		setTimeout(() => {			//меняем после анимации кнопки и label, которые ниже.
-			mainForm.tittle.innerHTML = `<p>${day}</p><p>${year}</p><p>${time}</p>`;
+			const mainDisplayName = document.querySelector('.main-tittle__display-name')
+			const mainDate = document.querySelector('.main-tittle__date')
+			const mainTime = document.querySelector('.main-tittle__time')
+			if (fileType != 'load') {
+				const [datePart, timePart, displayName] = fileName.split('_');
+				const isoString = `${datePart}T${timePart.replace('-', ':')}`;
+				const date = new Date(isoString);
+				console.log('date', date);
+
+				mainDisplayName.innerHTML = displayName.split('.')[0]
+				mainDate.innerHTML = `${date.getDate()} ${textStrings.monthsNames[date.getMonth()]} ${date.getFullYear()}`
+				mainTime.innerHTML = `${date.getHours()}:${date.getMinutes()}`
+			} else if (fileType == 'load') {
+				const day = getDateinfo('day')
+				const year = getDateinfo('year')
+				const time = getDateinfo('time')
+				mainDisplayName.innerHTML = `${textStrings.event}`;
+				mainDate.innerHTML = `${day} ${year}`
+				mainTime.innerHTML = `${time}`
+			}
+
 			mainForm.tittle.classList.remove('_hidden');
-			mainForm.tittle.classList.add('_active');
-			localFileButton.remove();
-		}, 1000);
+			lastFileElement.remove();
+			calendarElement.remove();
+			dateFilesElement.remove();
+		}, 1300);
 
 
 
@@ -555,7 +940,7 @@ function startFileView(fileType) {
 			mainForm.subtittle.remove();
 			buttons.container.classList.add('_active');
 			classButtonsContainer.classList.add('_active')
-		}, getTransitionDurationTime(mainForm.label));
+		}, 1300);
 	} else {
 
 		setTimeout(() => {
@@ -624,7 +1009,7 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 
 			if (CONSOLE_DEBUG) console.log('top', firstTimePosition - mainTimePosition + 10 + 5);
 
-			mainTime.style.top = `${firstTimePosition - mainTimePosition + 10 + 5}px`
+			mainTime.style.top = `${firstTimePosition - mainTimePosition + 10 + 5} px`
 		}
 
 		spoilerButtonAnimation(e.target);
@@ -660,7 +1045,7 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 		//Здесь считаем начальную ширину графика, чтобы влез в контейнер.
 		//величину области показа, минус псевдо круг и финальный круг и падинги делим на количество кругов
 		//получаем ширину одног круга для Grid
-		allLapsLaps.style.gridTemplateColumns = `7px repeat(${allLapsLap.length - 1},${((allLapsArea.offsetWidth - pseudoLap.offsetWidth - allLapsLap[allLapsLap.length - 1].offsetWidth - (parseInt(getComputedStyle(allLapsArea).paddingLeft) * 2) - 10) / (allLapsLap.length - 1))}px)7px`
+		allLapsLaps.style.gridTemplateColumns = `7px repeat(${allLapsLap.length - 1}, ${((allLapsArea.offsetWidth - pseudoLap.offsetWidth - allLapsLap[allLapsLap.length - 1].offsetWidth - (parseInt(getComputedStyle(allLapsArea).paddingLeft) * 2) - 10) / (allLapsLap.length - 1))}px)7px`
 
 		setTimeout(() => {			//небольшая задержка для подстраховки, чтоб отрисовался html, а потом показывать
 			modalOnOff(allLapsElement, true)			//Показываем контейнеры
@@ -678,8 +1063,8 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 			const maxLine = document.querySelector('.all-laps__max-line')
 			const averageValue = averageLine.querySelector('span')
 			const maxValue = maxLine.querySelector('span')
-			averageValue.style.transform = `translate(${allLapsArea.scrollLeft}px,0)`
-			maxValue.style.transform = `translate(${allLapsArea.scrollLeft}px,0)`
+			averageValue.style.transform = `translate(${allLapsArea.scrollLeft}px, 0)`
+			maxValue.style.transform = `translate(${allLapsArea.scrollLeft}px, 0)`
 		})
 
 
@@ -706,7 +1091,7 @@ function pilotTabAction(e) {			//Это события вкладки Pilots
 				currentLap.classList.add('_hold')
 				const allLapsAreaHeight = allLapsArea.offsetHeight;
 				const allLapsAreaHeightScroll = allLapsArea.clientHeight;
-				allLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll}px`
+				allLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll} px`
 				allLapsArea.classList.add('_lock');
 				graphTouchFlag = true;
 			}
@@ -941,7 +1326,7 @@ function leaderboardTabAction(e) {
 		// 	const tabWidth = tabsLeader[0].element.offsetHeight;
 		// 	const itemElementWidth = itemsElement.offsetHeight;
 
-		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${tabWidth + 20}px`
+		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${ tabWidth + 20 } px`
 
 		// }, getTransitionDurationTime(tabsLeader[0].element));
 
@@ -955,7 +1340,7 @@ function leaderboardTabAction(e) {
 		// 	const tabWidth = tabsLeader[1].element.offsetHeight;
 		// 	const itemElementWidth = itemsElement.offsetHeight;
 
-		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${tabWidth + 20}px`
+		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${ tabWidth + 20 } px`
 
 		// }, getTransitionDurationTime(tabsLeader[1].element));
 
@@ -969,7 +1354,7 @@ function leaderboardTabAction(e) {
 		// 	const tabWidth = tabsLeader[2].element.offsetHeight;
 		// 	const itemElementWidth = itemsElement.offsetHeight;
 
-		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${tabWidth + 20}px`
+		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${ tabWidth + 20 } px`
 		// }, getTransitionDurationTime(tabsLeader[2].element));
 
 	}
@@ -983,7 +1368,7 @@ function leaderboardTabAction(e) {
 		// 	const tabWidth = tabsLeader[3].element.offsetHeight;
 		// 	const itemElementWidth = itemsElement.offsetHeight;
 
-		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${tabWidth + 20}px`
+		// 	if (tabWidth > itemElementWidth) itemsElement.style.height = `${ tabWidth + 20 } px`
 
 		// }, getTransitionDurationTime(tabsLeader[3].element));
 	}
@@ -1080,7 +1465,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 	const pilotsPadding = parseInt(getComputedStyle(pilotsElement).paddingRight);
 	const scrollWidth = pilotsElement.offsetWidth - pilotsElement.clientWidth
 
-	pilotsElement.style.paddingRight = `${pilotsPadding - scrollWidth}px`
+	pilotsElement.style.paddingRight = `${pilotsPadding - scrollWidth} px`
 
 
 
@@ -1167,7 +1552,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 		if (e.target == viewButton) {
 			tabSwitch(tabsRound[0].name, tabsRound);
 			// if (roundPlayState != 'end') {
-			// 	textChange(paragraph, `<p>Пауза</p>`, 150);
+			// 	textChange(paragraph, `< p > Пауза</ > `, 150);
 			// 	startRound();
 			// 	roundPlayState = 'play';
 			// }
@@ -1175,7 +1560,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 		if (e.target == statisticButton) {
 			tabSwitch(tabsRound[1].name, tabsRound)
 			// if (roundPlayState != 'end') {
-			// 	textChange(paragraph, `<p>Старт</p>`, 150);
+			// 	textChange(paragraph, `< p > Старт</ > `, 150);
 			// 	pauseRound();
 			// 	roundPlayState = 'pause';
 			// }
@@ -1185,11 +1570,11 @@ function goToRoundAction(round, heat, buttonPressed) {
 	roundPlayButton.addEventListener('click', function (e) {
 		const paragraph = roundPlayButton.firstElementChild;
 		if (roundPlayState == 'play') {
-			textChange(paragraph, `<p>${textStrings.roundsTab.play}</p>`, 150);
+			textChange(paragraph, `< p > ${textStrings.roundsTab.play}</ > `, 150);
 			pauseRound();
 			roundPlayState = 'pause';
 		} else if (roundPlayState == 'pause') {
-			textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p>`, 150);
+			textChange(paragraph, `< p > ${textStrings.roundsTab.pause}</ > `, 150);
 			startRound();
 			roundPlayState = 'play';
 
@@ -1198,7 +1583,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 				const laps = lapsByPilot[nameForLap]
 				laps.forEach(lap => {
 					lap.style.transition = `all 0.8s ease`;
-					lap.style.width = `0%`
+					lap.style.width = `0 % `
 					lap.classList.remove('_akcent')
 					setTimeout(() => {
 						lap.style.transition = null;
@@ -1212,7 +1597,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 			slider.classList.add('_no-event');
 
 			setTimeout(() => {
-				textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p>`, 250);
+				textChange(paragraph, `< p > ${textStrings.roundsTab.pause}</ > `, 250);
 			}, 300);
 			setTimeout(() => {
 				startRound();
@@ -1299,8 +1684,8 @@ function roundsTabAction(e) {
 	const heatTabs = getTabsRounds();
 
 	heatTabs.forEach((heat, index) => {
-		if (e.target.closest(`.rounds__${heat.name}`)) {
-			if (CONSOLE_DEBUG) console.log(`${textStrings.roundsTab.heat} ${heat.name}`);
+		if (e.target.closest(`.rounds__${heat.name} `)) {
+			if (CONSOLE_DEBUG) console.log(`${textStrings.roundsTab.heat} ${heat.name} `);
 			tabSwitch(tabsRounds[index].name, tabsRounds)
 			tabHeightChange(tabsRounds[index].element, itemsElement, false)
 		}
@@ -1416,7 +1801,7 @@ function tabHeightChange(tabElement, tabItemsElement, firstState) {
 		const tabWidth = tabElement.offsetHeight;
 		const itemElementWidth = tabItemsElement.offsetHeight;
 
-		if (tabWidth > itemElementWidth || firstState) tabItemsElement.style.height = `${tabWidth + 20}px`
+		if (tabWidth > itemElementWidth || firstState) tabItemsElement.style.height = `${tabWidth + 20} px`
 
 	}, getTransitionDurationTime(tabElement));
 
@@ -1726,11 +2111,11 @@ function writePilotsHTML() {		// Рисуем страницу пилотов
 			pilotsVsInput.classList.add('pilots-vs-form-input')
 			pilotsVsInput.setAttribute("form", "pilots-vs-form");
 			pilotsVsInput.setAttribute("type", "checkbox");
-			pilotsVsInput.setAttribute("name", `${pilot.name}`);
+			pilotsVsInput.setAttribute("name", `${pilot.name} `);
 
 			pilotsVsInputLabel.classList.add('pilots-vs-form-input__label')
-			pilotsVsInputLabel.setAttribute('for', `${pilot.name}`)
-			pilotsVsInputLabel.innerHTML = `<p>${textStrings.pilotsTab.vs}</p><span class="label__span"></span>`
+			pilotsVsInputLabel.setAttribute('for', `${pilot.name} `)
+			pilotsVsInputLabel.innerHTML = `< p > ${textStrings.pilotsTab.vs}</ > <span class="label__span"></span>`
 			pilotsVsInputContainer.append(pilotsVsInputLabel, pilotsVsInput)
 
 
@@ -1773,7 +2158,7 @@ function pilotsVsActions(nameForFunctions1, nameForFunctions2) {
 	const name1 = document.querySelector('.pilots-vs_name1')
 	const name2 = document.querySelector('.pilots-vs_name2')
 
-	pilotsVsAllLapsLaps.style.gridTemplateColumns = `7px repeat(${pilotsVsAllLapsLap.length - 1},${((pilotsVsAllLapsArea.offsetWidth - pilotsVsPseudoLap.offsetWidth - pilotsVsAllLapsLap[pilotsVsAllLapsLap.length - 1].offsetWidth - (parseInt(getComputedStyle(pilotsVsAllLapsArea).paddingLeft) * 2) - 10) / (pilotsVsAllLapsLap.length - 1))}px)7px`
+	pilotsVsAllLapsLaps.style.gridTemplateColumns = `7px repeat(${pilotsVsAllLapsLap.length - 1}, ${((pilotsVsAllLapsArea.offsetWidth - pilotsVsPseudoLap.offsetWidth - pilotsVsAllLapsLap[pilotsVsAllLapsLap.length - 1].offsetWidth - (parseInt(getComputedStyle(pilotsVsAllLapsArea).paddingLeft) * 2) - 10) / (pilotsVsAllLapsLap.length - 1))}px) 7px`
 
 	setTimeout(() => {			//небольшая задержка для подстраховки, чтоб отрисовался html, а потом показывать
 		modalOnOff(pilotsVsElement, true)			//Показываем контейнеры
@@ -1835,8 +2220,8 @@ function pilotsVsActions(nameForFunctions1, nameForFunctions2) {
 		const maxLine = document.querySelector('.pilots-vs__max-line')
 		const averageValue = averageLine.querySelector('span')
 		const maxValue = maxLine.querySelector('span')
-		averageValue.style.transform = `translate(${pilotsVsAllLapsArea.scrollLeft}px,0)`
-		maxValue.style.transform = `translate(${pilotsVsAllLapsArea.scrollLeft}px,0)`
+		averageValue.style.transform = `translate(${pilotsVsAllLapsArea.scrollLeft}px, 0)`
+		maxValue.style.transform = `translate(${pilotsVsAllLapsArea.scrollLeft}px, 0)`
 	})
 
 
@@ -1865,7 +2250,7 @@ function pilotsVsActions(nameForFunctions1, nameForFunctions2) {
 			currentLap.classList.add('_hold')
 			const allLapsAreaHeight = pilotsVsAllLapsArea.offsetHeight;
 			const allLapsAreaHeightScroll = pilotsVsAllLapsArea.clientHeight;
-			pilotsVsAllLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll}px`
+			pilotsVsAllLapsArea.style.paddingBottom = `${allLapsAreaHeight - allLapsAreaHeightScroll} px`
 			pilotsVsAllLapsArea.classList.add('_lock');
 			graphTouchFlag = true;
 		}
@@ -2139,20 +2524,20 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		bestLapOtherElements.push(bestLapOtherElement);
 		bestConsecutiveOtherElements.push(bestConsecutiveOtherElement);
 
-		pilotsVsStatistic.bestLapOther.append(bestLapOtherElements[`${i - 1}`]);
-		pilotsVsStatistic.bestConsecutiveOther.append(bestConsecutiveOtherElements[`${i - 1}`]);
+		pilotsVsStatistic.bestLapOther.append(bestLapOtherElements[`${i - 1} `]);
+		pilotsVsStatistic.bestConsecutiveOther.append(bestConsecutiveOtherElements[`${i - 1} `]);
 	}
 
 
 	const pilotsVsArr = [nameToVs1, nameToVs2]
 
-	pilotsVs.tittleText.innerHTML = `<p class="pilots-vs_name1">${pilotsVsArr[0]}</p>
+	pilotsVs.tittleText.innerHTML = `< p class="pilots-vs_name1" > ${pilotsVsArr[0]}</ >
 	<p>vs</p>
 	<p class="pilots-vs_name2">${pilotsVsArr[1]}</p>`
 
 
-	pilotsVsStatistic.name1.innerHTML = `${pilotsVsArr[0]}`
-	pilotsVsStatistic.name2.innerHTML = `${pilotsVsArr[1]}`
+	pilotsVsStatistic.name1.innerHTML = `${pilotsVsArr[0]} `
+	pilotsVsStatistic.name2.innerHTML = `${pilotsVsArr[1]} `
 
 	const pilotsFloatTimes = [];
 
@@ -2186,12 +2571,12 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		const startsElement = document.createElement('div')
 		const totalTimeElement = document.createElement('div')
 
-		bestLapElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-lap-${index + 1}`)
-		bestConsecutiveElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-consecutive-${index + 1}`)
-		averageElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_average-${index + 1}`)
-		totalLapsElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_total-laps-${index + 1}`)
-		startsElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_starts-${index + 1}`)
-		totalTimeElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_total-time-${index + 1}`)
+		bestLapElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - lap - ${index + 1} `)
+		bestConsecutiveElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - consecutive - ${index + 1} `)
+		averageElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_average - ${index + 1} `)
+		totalLapsElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_total - laps - ${index + 1} `)
+		startsElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_starts - ${index + 1} `)
+		totalTimeElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_total - time - ${index + 1} `)
 
 		bestLapElement.innerHTML = laps[0].lapTime
 		pilotFloatTimes.lapTime = lapTimeConverter(laps[0].lapTime, 'float');
@@ -2202,7 +2587,7 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 			pilotFloatTimes.consecutiveTime = lapTimeConverter(consecutives[0].lapTime, 'float');
 			bestConsecutivesIds.push(...consecutives[0].lapId);
 		} catch (error) {
-			bestConsecutiveElement.innerHTML = `-:--.---`
+			bestConsecutiveElement.innerHTML = `-: --.--- `
 		}
 
 		averageElement.innerHTML = pilotInfo[0].averageLap;
@@ -2230,21 +2615,21 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 			const bestLapOtherItemElement = document.createElement('div');
 			const bestConsecutiveOtherItemElement = document.createElement('div');
 
-			bestLapOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-lap-${index + 1}`)
-			bestConsecutiveOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots-vs__stat-stroke-value_best-consecutive-${index + 1}`)
+			bestLapOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - lap - ${index + 1} `)
+			bestConsecutiveOtherItemElement.classList.add('pilots-vs__stat-stroke-value', `pilots - vs__stat - stroke - value_best - consecutive - ${index + 1} `)
 			try {
-				bestLapOtherItemElement.innerHTML = `${laps[i].lapTime}`
+				bestLapOtherItemElement.innerHTML = `${laps[i].lapTime} `
 			} catch (error) {
-				bestLapOtherItemElement.innerHTML = `-:--.---`
+				bestLapOtherItemElement.innerHTML = `-: --.--- `
 			}
 			try {
-				bestConsecutiveOtherItemElement.innerHTML = `${consecutives[i].lapTime}`
+				bestConsecutiveOtherItemElement.innerHTML = `${consecutives[i].lapTime} `
 			} catch (error) {
-				bestConsecutiveOtherItemElement.innerHTML = `-:--.---`
+				bestConsecutiveOtherItemElement.innerHTML = `-: --.--- `
 			}
 
-			bestLapOtherElements[`${i - 1}`].append(bestLapOtherItemElement);
-			bestConsecutiveOtherElements[`${i - 1}`].append(bestConsecutiveOtherItemElement);
+			bestLapOtherElements[`${i - 1} `].append(bestLapOtherItemElement);
+			bestConsecutiveOtherElements[`${i - 1} `].append(bestConsecutiveOtherItemElement);
 		}
 
 
@@ -2476,12 +2861,12 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 
 	}
 
-	pilotsVsAllLaps.slider.style.gridColumn = `span ${lapsTimeData.length + 1}`;
-	pilotsVsAllLaps.averageLine.style.gridColumn = `span ${lapsTimeData.length + 1}`
-	pilotsVsAllLaps.maxLine.style.gridColumn = `span ${lapsTimeData.length + 1}`
+	pilotsVsAllLaps.slider.style.gridColumn = `span ${lapsTimeData.length + 1} `;
+	pilotsVsAllLaps.averageLine.style.gridColumn = `span ${lapsTimeData.length + 1} `
+	pilotsVsAllLaps.maxLine.style.gridColumn = `span ${lapsTimeData.length + 1} `
 
-	pilotsVsAllLaps.averageLine.innerHTML = `<span>${averageLineString}</span>`
-	pilotsVsAllLaps.maxLine.innerHTML = `<span>${maxLineString}</span>`
+	pilotsVsAllLaps.averageLine.innerHTML = `< span > ${averageLineString}</ > `
+	pilotsVsAllLaps.maxLine.innerHTML = `< span > ${maxLineString}</ > `
 
 
 	pilotsVsAllLaps.laps.append(pilotsVsAllLaps.slider, pilotsVsAllLaps.averageLine, pilotsVsAllLaps.maxLine, pilotsVsAllLaps.pseudoLap);
@@ -2511,15 +2896,15 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		})
 
 		svg = `
-			<span></span>
+		< span ></ >
 			<svg class=pilots-vs__lap-graph preserveAspectRatio="none" viewbox="0 0 8 280">
-				<circle class=pilots-vs__lap-graph-obj fill=${colors[0]} r="${circleRadius[0]}" cx="4" cy="${svgPostitions[0]}" /> 
-				<circle class=pilots-vs__lap-graph-obj fill=${colors[1]} r="${circleRadius[1]}" cx="4" cy="${svgPostitions[1]}" /> 
+				<circle class=pilots-vs__lap-graph-obj fill=${colors[0]} r="${circleRadius[0]}" cx="4" cy="${svgPostitions[0]}" />
+				<circle class=pilots-vs__lap-graph-obj fill=${colors[1]} r="${circleRadius[1]}" cx="4" cy="${svgPostitions[1]}" />
 				<circle class=pilots-vs__lap-graph-obj fill="#0b0c10" r="${bestDotRadius[0]}" cx="4" cy="${svgPostitions[0]}" />
-				<circle class=pilots-vs__lap-graph-obj fill="#0b0c10" r="${bestDotRadius[1]}" cx="4" cy="${svgPostitions[1]}" /> 
+				<circle class=pilots-vs__lap-graph-obj fill="#0b0c10" r="${bestDotRadius[1]}" cx="4" cy="${svgPostitions[1]}" />
 
 			</svg>
-			`
+	`
 
 		lapElement.innerHTML = svg;
 
@@ -2535,10 +2920,10 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		
 		const svgHtml = document.createElement('circle');
 		svgHtml.classList.add('pilots-vs__lap-graph-obj')
-		svgHtml.setAttribute('fill', `${'#f00'}`)
+		svgHtml.setAttribute('fill', `${ '#f00' } `)
 		svgHtml.setAttribute('r', `4`)
 		svgHtml.setAttribute('cx', `4`)
-		svgHtml.setAttribute('cy', `${111}`)
+		svgHtml.setAttribute('cy', `${ 111 } `)
 		
 		
 			lapTimes.forEach((value, index) => {
@@ -2553,10 +2938,10 @@ function writePilotsVs(nameToVs1, nameToVs2) {
 		
 				const svgHtml = document.createElement('circle');
 				svgHtml.classList.add('pilots-vs__lap-graph-obj')
-				svgHtml.setAttribute('fill', `${color}`)
+				svgHtml.setAttribute('fill', `${ color } `)
 				svgHtml.setAttribute('r', `4`)
 				svgHtml.setAttribute('cx', `4`)
-				svgHtml.setAttribute('cy', `${startSvg}`)
+				svgHtml.setAttribute('cy', `${ startSvg } `)
 		
 		
 				lapGraphCircle.append(svgHtml)
@@ -2626,10 +3011,10 @@ function setAkcentValues(akcentArrHere) {
 	if (CONSOLE_DEBUG) console.log('akcentElements', akcentArrHere[2]);
 	// if(CONSOLE_DEBUG)console.log('');
 
-	akcentElements[`bestLap${akcentArrHere[0]}`].classList.add('_akcent');
-	akcentElements[`bestConsecutive${akcentArrHere[1]}`].classList.add('_akcent');
-	akcentElements[`average${akcentArrHere[2]}`].classList.add('_akcent');
-	akcentElements[`totalLaps${akcentArrHere[3]}`].classList.add('_akcent');
+	akcentElements[`bestLap${akcentArrHere[0]} `].classList.add('_akcent');
+	akcentElements[`bestConsecutive${akcentArrHere[1]} `].classList.add('_akcent');
+	akcentElements[`average${akcentArrHere[2]} `].classList.add('_akcent');
+	akcentElements[`totalLaps${akcentArrHere[3]} `].classList.add('_akcent');
 
 }
 
@@ -2696,11 +3081,11 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 	inRound.roundNum.classList.add('in-round__roundNum')
 	inRound.heatNum.classList.add('in-round__heatNum')
 
-	inRound.tittleName.innerHTML = `<p>${name}</p>`			//Имя 
-	inRound.tittleRound.innerHTML = `<p>${lap.round}</p>`			//номер раунда
+	inRound.tittleName.innerHTML = `< p > ${name}</ > `			//Имя 
+	inRound.tittleRound.innerHTML = `< p > ${lap.round}</ > `			//номер раунда
 
-	inRound.roundNum.setAttribute("value", `${lap.roundId}`)
-	inRound.heatNum.setAttribute("value", `${lap.heatId}`)
+	inRound.roundNum.setAttribute("value", `${lap.roundId} `)
+	inRound.heatNum.setAttribute("value", `${lap.heatId} `)
 
 
 	inRound.exitBtn.innerHTML = '<span></span>';
@@ -2736,10 +3121,10 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 			roundNode.classList.add('in-round__lap-node')
 			roundColumn.classList.add('in-round__lap-column', '_hidden-columns')
 
-			roundLap.innerHTML = `<span>${textStrings.inRoundTab.lap} ${i + 1}</>`
+			roundLap.innerHTML = `< span > ${textStrings.inRoundTab.lap} ${i + 1}</> `
 			roundNode.innerHTML = laps[i].lapTime;			//номер круга
 
-			roundColumn.style.height = `${(lapHeights[i] * heightStep) - 10}%`
+			roundColumn.style.height = `${(lapHeights[i] * heightStep) - 10}% `
 
 			roundLap.append(roundColumn);
 			inRound.areaLaps.append(roundLap, roundNode);
@@ -2776,13 +3161,13 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 		inRound.lapTime.append(timeText, timeValue)
 	} else if (akcentLap.length > 1) {				//выбрали круги подря
 		inRound.lapCountText.innerHTML = textStrings.inRoundTab.lapsNum
-		inRound.lapCountValue.innerHTML = `${+akcentLap[0]}-${+akcentLap[akcentLap.length - 1]}`;
+		inRound.lapCountValue.innerHTML = `${+akcentLap[0]} -${+akcentLap[akcentLap.length - 1]} `;
 		for (let i = 0; i < akcentLap.length; i++) {
 			const timeText = document.createElement('div')
 			const timeValue = document.createElement('div')
 			timeText.classList.add('in-round__lap-time-text', '_stat-text');
 			timeValue.classList.add('in-round__lap-time-value', 'modal__stat-value', '_stat-value');
-			timeText.innerHTML = `${textStrings.inRoundTab.lapTime} ${i + 1}`;
+			timeText.innerHTML = `${textStrings.inRoundTab.lapTime} ${i + 1} `;
 			timeValue.innerHTML = lap.lapsData[i].lapTime;
 			inRound.lapTime.append(timeText, timeValue)
 		}
@@ -2845,7 +3230,7 @@ function writeInRoundHTML(lap, laps, name) {			//Рисуем 'В каком р�
 	})
 
 
-	inRound.areaLaps.style.gridTemplateColumns = `repeat(${lapHeights.length},1fr) 2px`;			//2px для замыкающей полоски
+	inRound.areaLaps.style.gridTemplateColumns = `repeat(${lapHeights.length}, 1fr) 2px`;			//2px для замыкающей полоски
 	return inRound.inRound;
 }
 
@@ -2946,13 +3331,13 @@ function writeAllLapsHTML(name) {
 	allLaps.lapTimeValue.classList.add('all-laps__lap-time-value', '_stat-value');
 
 
-	allLaps.tittleText.innerHTML = `<p>${name}</p>`			//Имя которое выбрали
-	allLaps.exitBtn.innerHTML = `<span></span>`
-	allLaps.lapsArea.innerHTML = `<span></span>`
+	allLaps.tittleText.innerHTML = `< p > ${name}</ > `			//Имя которое выбрали
+	allLaps.exitBtn.innerHTML = `< span ></ > `
+	allLaps.lapsArea.innerHTML = `< span ></ > `
 
-	allLaps.minus.innerHTML = `-`
+	allLaps.minus.innerHTML = `- `
 	allLaps.buttonsTittle.innerHTML = textStrings.allLapsTab.scale
-	allLaps.plus.innerHTML = `+`
+	allLaps.plus.innerHTML = `+ `
 
 	allLaps.roundCountText.innerHTML = textStrings.allLapsTab.roundNum;
 	allLaps.roundCountValue.innerHTML = `0`
@@ -2987,8 +3372,8 @@ function writeAllLapsHTML(name) {
 
 	const lapsData = getLapsByName(name, heat, false);			//берем все круги
 
-	allLaps.slider.setAttribute("max", `${lapsData.length - 1}`);			//максимальные ползунковые движения
-	allLaps.averageLine.innerHTML = `<span>${averageLineValueString}</span>`			//значение полоски среднего круга
+	allLaps.slider.setAttribute("max", `${lapsData.length - 1} `);			//максимальные ползунковые движения
+	allLaps.averageLine.innerHTML = `< span > ${averageLineValueString}</ > `			//значение полоски среднего круга
 
 	const lapsDataSorted = getLapsByName(name, heat, true);			//берем все круги сортированные, чтобы найти лучший
 	const bestId = lapsDataSorted[0].lapId;			//id лучшего круга
@@ -3005,7 +3390,7 @@ function writeAllLapsHTML(name) {
 
 	const maxLinefloat = lapTimeConverter(averageLineValueString, 'float') * 2;
 	const maxLineString = lapTimeConverter(maxLinefloat, 'string')
-	allLaps.maxLine.innerHTML = `<span>${maxLineString}</span>`			//значени полоски максимального круга. Не максимального, а 2x среднего
+	allLaps.maxLine.innerHTML = `< span > ${maxLineString}</ > `			//значени полоски максимального круга. Не максимального, а 2x среднего
 
 	const averageLineValueFloat = lapTimeConverter(averageLineValueString, 'float')			//переводим среднее время во float
 
@@ -3014,9 +3399,9 @@ function writeAllLapsHTML(name) {
 
 	allLaps.laps.append(allLaps.slider, allLaps.averageLine, allLaps.maxLine, allLaps.pseudoLap);			//тут добавляем во все все круги слайдер, псевдо круг, и 2 полоски
 
-	allLaps.slider.style.gridColumn = `span ${lapsData.length + 1}`			//тут делаем полоски и слайдер шириной во все колонки
-	allLaps.averageLine.style.gridColumn = `span ${lapsData.length + 1}`
-	allLaps.maxLine.style.gridColumn = `span ${lapsData.length + 1}`
+	allLaps.slider.style.gridColumn = `span ${lapsData.length + 1} `			//тут делаем полоски и слайдер шириной во все колонки
+	allLaps.averageLine.style.gridColumn = `span ${lapsData.length + 1} `
+	allLaps.maxLine.style.gridColumn = `span ${lapsData.length + 1} `
 
 	for (let i = 0; i <= lapsData.length - 1; i++) {			//добавляем круги
 		const currentTimeFloat = lapTimeConverter(lapsData[i].lapTime, 'float');			//время данного круга во float
@@ -3036,11 +3421,11 @@ function writeAllLapsHTML(name) {
 		}
 
 		const svg = `
-		<span></span>
-		<svg class=all-laps__lap-graph preserveAspectRatio="none" viewbox="0 0 8 280">
-			<circle class=all-laps__lap-graph-obj fill=${color} r="4" cx="4" cy="${startSvg}" /> 
-		</svg>
-		`
+		< span ></ >
+			<svg class=all-laps__lap-graph preserveAspectRatio="none" viewbox="0 0 8 280">
+				<circle class=all-laps__lap-graph-obj fill=${color} r="4" cx="4" cy="${startSvg}" />
+			</svg>
+	`
 
 
 		const lapElement = document.createElement('div');			//создаем элемент круга
@@ -3295,7 +3680,7 @@ function writeLeaderboardHTML() {
 		lapStroke.name.classList.add('leaderboard-lap__name', '_stat-value');
 		lapStroke.round.classList.add('leaderboard-lap__round', '_stat-value');
 		lapStroke.time.classList.add('leaderboard-lap__time', '_button-time');
-		lapStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
+		lapStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
 		lapStroke.round.innerHTML = element.lapRound;
 		lapStroke.time.innerHTML = time;
 
@@ -3317,7 +3702,7 @@ function writeLeaderboardHTML() {
 		consecutiveStroke.name.classList.add('leaderboard-consecutive__name', '_stat-value');
 		consecutiveStroke.round.classList.add('leaderboard-consecutive__round', '_stat-value');
 		consecutiveStroke.time.classList.add('leaderboard-consecutive__time', '_button-time');
-		consecutiveStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
+		consecutiveStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
 		consecutiveStroke.round.innerHTML = element.consecutiveRound;
 		consecutiveStroke.time.innerHTML = time;
 		consecutiveStroke.item.append(consecutiveStroke.name, consecutiveStroke.round, consecutiveStroke.time)
@@ -3338,7 +3723,7 @@ function writeLeaderboardHTML() {
 		countStroke.name.classList.add('leaderboard-count__name', '_stat-value');
 		countStroke.starts.classList.add('leaderboard-count__starts', '_stat-value');
 		countStroke.count.classList.add('leaderboard-count__count', '_stat-value');
-		countStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
+		countStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
 		countStroke.starts.innerHTML = element.countStarts;
 		countStroke.count.innerHTML = element.countLaps;
 		countStroke.item.append(countStroke.name, countStroke.starts, countStroke.count)
@@ -3363,7 +3748,7 @@ function writeLeaderboardHTML() {
 		averageStroke.laps.classList.add('leaderboard-average__laps', '_stat-value');
 		averageStroke.time.classList.add('leaderboard-average__average', '_stat-value');
 
-		averageStroke.name.innerHTML = `<p>${index + 1}</p><p>${element.name}</p>`;
+		averageStroke.name.innerHTML = `< p > ${index + 1}</ > <p>${element.name}</p>`;
 		averageStroke.starts.innerHTML = element.averageStarts;
 		averageStroke.laps.innerHTML = element.averageLaps;
 		averageStroke.time.innerHTML = time;
@@ -3427,7 +3812,7 @@ function getTabsRounds() {
 
 	for (let heat in heatObj) {
 		const tabObj = {};
-		tabObj.name = `heat-${heat}`
+		tabObj.name = `heat-${heat} `
 		tabObj.opened = false;
 		tabObj.element = document.querySelector(`.rounds__rounds-heat-${heat}`)
 
@@ -3501,7 +3886,7 @@ function writeRoundsHTML() {
 			groupName = `${textStrings.roundsTab.heat} ${heatNum}`;
 		}
 
-		// const heatTextString = `Группа ${heat}`;
+		// const heatTextString = `Группа ${ heat } `;
 		heatButton.classList.add('rounds__heat', '_button', `${heatClassString}`)
 		heatButton.innerHTML = groupName;
 		rounds.buttons.append(heatButton)
@@ -3519,7 +3904,7 @@ function writeRoundsHTML() {
 		roundsArr.forEach(round => {
 			const roundElement = document.createElement('button');
 			roundElement.classList.add('rounds__item', '_button')
-			roundElement.innerHTML = `${textStrings.roundsTab.round} ${round}`
+			roundElement.innerHTML = `${textStrings.roundsTab.round} ${round} `
 			roundsContainer.append(roundElement);
 		})
 
@@ -3637,7 +4022,7 @@ function getPilotsStats() {			//здесь список пилотов
 		// try {
 		// 	pilotInfo.heat = pilot.consecutives_source.heat;
 		// } catch (error) {
-		// 	if(CONSOLE_DEBUG)console.log(`Нет информации по heat для ${pilot.callsign}`, error);
+		// 	if(CONSOLE_DEBUG)console.log(`Нет информации по heat для ${ pilot.callsign } `, error);
 		// 	pilotInfo.heat = 0;
 		// }
 
@@ -3678,13 +4063,13 @@ function getDateinfo(dateOrTime) {			//берем дату для заголов
 		let time;
 		if (CONSOLE_DEBUG) console.log('ДАТА', dateString);
 
-		let monthArr;
-		if (language == 'ru') {
-			monthArr = ['января', 'феваля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+		// let monthArr;
+		// if (language == 'ru') {
+		// 	monthArr = ['января', 'феваля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
-		} else if (language == 'en') {
-			monthArr = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
-		}
+		// } else if (language == 'en') {
+		// 	monthArr = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+		// }
 
 		if (dateString) {			//Если дату нашли
 			year = `${[...dateString].splice(0, 4).join('')} года`;			//Год первые 4 цифры и слово 'года'
@@ -3692,7 +4077,7 @@ function getDateinfo(dateOrTime) {			//берем дату для заголов
 			day = [...dateString].splice(8, 2).join('');			//число
 			time = `${[...dateString].splice(11, 2).join('')}:00`;			//Час времени
 
-			mounth = monthArr[parseInt(monthNum) - 1];			//меняем номер месяца на название
+			mounth = textStrings.monthsNames[parseInt(monthNum) - 1];			//меняем номер месяца на название
 
 		} else {			//Если врдуг мы нашли дату, но она undefined;
 			day = 'Дата ';
@@ -3703,11 +4088,11 @@ function getDateinfo(dateOrTime) {			//берем дату для заголов
 
 
 		if (dateOrTime == 'day') {			//вовзрааем строку дня и месяца, или же 'Не определена'
-			const date = `${day} ${mounth}`
+			const date = `${day} ${mounth} `
 			return date;
 		}
 		if (dateOrTime == 'year') {			//возвращаем строку года или пустую строку
-			const yearString = `${year}`
+			const yearString = `${year} `
 			return yearString
 		}
 
