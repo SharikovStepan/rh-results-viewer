@@ -1570,11 +1570,11 @@ function goToRoundAction(round, heat, buttonPressed) {
 	roundPlayButton.addEventListener('click', function (e) {
 		const paragraph = roundPlayButton.firstElementChild;
 		if (roundPlayState == 'play') {
-			textChange(paragraph, `<p>${textStrings.roundsTab.play}</p> `, 150);
+			textChange(paragraph, `<p>${textStrings.roundsTab.play}</p>`, 150);
 			pauseRound();
 			roundPlayState = 'pause';
 		} else if (roundPlayState == 'pause') {
-			textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p> `, 150);
+			textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p>`, 150);
 			startRound();
 			roundPlayState = 'play';
 
@@ -1583,7 +1583,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 				const laps = lapsByPilot[nameForLap]
 				laps.forEach(lap => {
 					lap.style.transition = `all 0.8s ease`;
-					lap.style.width = `0 % `
+					lap.style.width = `0%`
 					lap.classList.remove('_akcent')
 					setTimeout(() => {
 						lap.style.transition = null;
@@ -1597,7 +1597,7 @@ function goToRoundAction(round, heat, buttonPressed) {
 			slider.classList.add('_no-event');
 
 			setTimeout(() => {
-				textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p> `, 250);
+				textChange(paragraph, `<p>${textStrings.roundsTab.pause}</p>`, 250);
 			}, 300);
 			setTimeout(() => {
 				startRound();
