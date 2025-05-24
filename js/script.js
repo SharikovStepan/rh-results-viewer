@@ -426,7 +426,7 @@ let filesJson = [];
 async function filesJsonLoad() {
 	let responseDataFiles;
 	try {
-		const response = await fetch('files.json')
+		const response = await fetch('https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/files.json')
 		if (!response.ok) throw new Error("Ошибка загрузки");
 		const responseData = await response.json();
 		responseDataFiles = responseData.files;
@@ -542,7 +542,7 @@ function getDayFiles(date) {
 
 
 async function dateFileUpload(fileName) {
-	const data = await fetch(`results.jsons/${fileName}`)
+	const data = await fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${fileName}`)
 	mainObj = await data.json();
 	console.log('fileNamefileNamefileNamefileName', fileName);
 
@@ -604,7 +604,7 @@ fetch('files.json')
 
 
 async function lastFileUpload() {
-	const data = await fetch(`results.jsons/${filesJson[filesJson.length - 1].fileName}`)
+	const data = await fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${filesJson[filesJson.length - 1].fileName}`)
 	mainObj = await data.json();
 	console.log('MAIN OBJ', mainObj);
 
