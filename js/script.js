@@ -26,7 +26,7 @@ if (language == 'ru') {
 			start: 'Старт',
 			end: 'Конец',
 			time: 'Время',
-			bestConsecutive: `Лучшие ${consecutivesCount} подряд`,
+			bestConsecutive: `Лучшие ${consecutivesCount} круга`,
 			average: 'Среднее время круга',
 			totalLaps: 'Всего кругов',
 			totalStarts: 'Всего Стартов',
@@ -57,7 +57,7 @@ if (language == 'ru') {
 			name: 'Имя пилота',
 			laps: 'Круги',
 			bestLap: 'Лучший круг',
-			bestConsecutive: `Лучшие ${consecutivesCount} подряд`,
+			bestConsecutive: `Лучшие ${consecutivesCount} круга`,
 			totalTime: 'Всего времени',
 			holeShot: 'Старт',
 			lap: 'Круг',
@@ -101,7 +101,7 @@ if (language == 'ru') {
 			lapNum: 'Номер круга',
 			lapTime: 'Время круга',
 			bestLap: 'Лучший круг',
-			bestConsecutive: `Лучшие ${consecutivesCount} подряд`,
+			bestConsecutive: `Лучшие ${consecutivesCount} круга`,
 			totalLaps: 'Всего кругов',
 			average: 'Среднее время',
 			starts: 'Стартов',
@@ -247,6 +247,7 @@ daysElement.addEventListener('click', function (e) {
 })
 const dateFilesItemsElement = document.querySelector('.date-files__items')
 
+
 dateFilesItemsElement.addEventListener('click', function (e) {
 	if (e.target.closest('.file__item')) {
 		const fileItemElement = e.target.closest('.file__item');
@@ -259,11 +260,15 @@ dateFilesItemsElement.addEventListener('click', function (e) {
 				elem.classList.add('_hidden', '_no-event');
 			}
 		})
-
+		const lastFileTittle = document.querySelector('.last-file__tittle')
 		const calendarElement = document.querySelector('.calendar')
+		const languageElement = document.querySelector('.language')
+
+		languageElement.classList.add('_hidden')
+		lastFileTittle.classList.add('_hidden')
 		calendarElement.classList.add('_hidden');
 
-		fileItemElement.classList.add('_active');
+		fileItemElement.classList.add('_active', 'flie-item_uploading');
 		dateFileUpload(fileName);
 	}
 })
@@ -440,7 +445,7 @@ async function filesJsonLoad() {
 			const [datePart, timePart, displayName] = file.split('_');
 			const isoString = `${datePart}T${timePart.replace('-', ':')}`;
 			const date = new Date(isoString);
-			obj.displayName = displayName.split('.')[0];
+			obj.displayName = displayName.split('.')[0].replace(/-/g, ' ')
 			obj.date = date;
 			obj.fileName = file;
 			obj.year = date.getFullYear();
@@ -548,11 +553,24 @@ function getDayFiles(date) {
 async function dateFileUpload(fileName) {
 	const data = await fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${fileName}`)
 	mainObj = await data.json();
-	console.log('fileNamefileNamefileNamefileName', fileName);
 
 	makeRaceClassButtons();
 
-	startFileView('date', fileName);
+	const fileItemElement = document.querySelector('.flie-item_uploading')
+
+	setTimeout(() => {
+		fileItemElement.classList.add('_hidden');
+		setTimeout(() => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			})
+		}, 300);
+		startFileView('date', fileName);
+
+	}, 400);
+
+
 }
 
 ////////////////////////////
@@ -610,11 +628,16 @@ fetch('files.json')
 async function lastFileUpload() {
 	const data = await fetch(`https://raw.githubusercontent.com/SharikovStepan/results-jsons/main/results.jsons/${filesJson[filesJson.length - 1].fileName}`)
 	mainObj = await data.json();
-	console.log('MAIN OBJ', mainObj);
 
+	const lastFileButton = document.querySelector('.last-file__item')
 	makeRaceClassButtons();
 
-	startFileView('local', filesJson[filesJson.length - 1].fileName);
+	lastFileButton.classList.add('_move');
+
+	lastFileButton.addEventListener('transitionend', function () {
+		startFileView('local', filesJson[filesJson.length - 1].fileName);
+	})
+
 
 }
 
@@ -622,6 +645,22 @@ async function lastFileUpload() {
 
 
 lastFileButton.addEventListener('click', function () {
+	const lastFileTittle = document.querySelector('.last-file__tittle');
+	const calendarElement = document.querySelector('.calendar')
+	const mainSubtittleElement = document.querySelector('.main-subtittle')
+	const mainForm = document.querySelector('.main-form');
+	const dateFilesElement = document.querySelector('.date-files')
+	const labelElement = document.querySelector('.main-form__label')
+	const languageElement = document.querySelector('.language')
+
+	languageElement.classList.add('_hidden')
+	dateFilesElement.classList.add('_hidden')
+	labelElement.classList.add('_hidden')
+	mainSubtittleElement.classList.add('_hidden')
+	mainForm.classList.add('_hidden')
+	calendarElement.classList.add('_hidden')
+	lastFileTittle.classList.add('_hidden')
+
 	lastFileButton.classList.add('_active')
 	lastFileUpload();
 
@@ -731,9 +770,10 @@ async function startButtonClick(e) { 	//Нажатие на кнопку Заг�
 		mainObj = fileToParse(notParsedJson); // Здесь парсим эту переменную
 		if (parsedOK) {			//Проверяем, норм ли спарсилось, и если да, убираем форму ввода и показываем дальнейшие кнопки
 
+
+
 			makeRaceClassButtons();
 			startFileView('load');
-
 
 		} else {			//Если не спарсилось, рисуем ошибку
 			mainForm.button.innerHTML = textStrings.error;
@@ -844,7 +884,6 @@ function startFileView(fileType, fileName) {
 
 	if (fileType != 'classSwitch') {
 
-		document.querySelector('.language').classList.add('_hidden')
 
 
 		const windowWidth = window.innerWidth;			// ширина окна, сколько надо проехаться кнопками за границу
@@ -870,29 +909,8 @@ function startFileView(fileType, fileName) {
 					behavior: 'smooth'
 				})
 			}, 300);
-
-		} else if (fileType == 'local') {
-			dateFilesElement.classList.add('_hidden')
-			document.querySelector('.last-file__tittle').classList.add('_hidden')
-			lastFileButton.classList.add('_move')
-			mainForm.button.classList.remove('_ready');
-			// lastFileButton.style.transition = 'transform 1s ease 0.3s, background-color 0.3s ease 0s'
-			// lastFileButton.style.transform = `translate(0px, ${-200}%)`;			//едем
-			mainForm.label.classList.add('_hidden')
-
-		} else if (fileType == 'date') {
-			document.querySelector('.last-file').classList.add('_hidden')
-			setTimeout(() => {
-				const dateFilesElement = document.querySelector('.date-files')
-				dateFilesElement.classList.add('_hidden')
-				window.scrollTo({
-					top: 0,
-					behavior: 'smooth'
-				})
-			}, 500);
 		}
 
-		// mainForm.label.style.transition = 'all 1s ease';
 		mainForm.subtittle.classList.add('_hidden');
 
 
@@ -925,7 +943,7 @@ function startFileView(fileType, fileName) {
 			lastFileElement.remove();
 			calendarElement.remove();
 			dateFilesElement.remove();
-		}, 1300);
+		}, 500);
 
 
 
@@ -936,7 +954,7 @@ function startFileView(fileType, fileName) {
 			mainForm.subtittle.remove();
 			buttons.container.classList.add('_active');
 			classButtonsContainer.classList.add('_active')
-		}, 1300);
+		}, 500);
 	} else {
 
 		setTimeout(() => {

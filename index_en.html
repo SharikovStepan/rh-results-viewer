@@ -34,12 +34,62 @@
 <body>
 	<div class="wrapper">
 		<div class="main">
-			<div class="main-tittle">
+			<div class="main-tittle _hidden">
 				<div class="main-tittle__container _container">
-					<h1>RotorHazard Results Viewer</h1>
+					<h2 class="main-tittle__display-name"></h2>
+					<div class="main-tittle__date"></div>
+					<div class="main-tittle__time"></div>
 				</div>
 			</div>
-			<button class="main-tittle__button _button">Show</button>
+			<div class="last-file">
+				<div class="last-file__container _container">
+					<h2 class="last-file__tittle">Last load</h2>
+
+					<div class="file__item last-file__item pseudo-button">
+						<div class="file__file-name">
+							<div class="file__file-name-tittle">Event:</div>
+							<div class="last-file__file-name-value file__file-name-value"></div>
+						</div>
+						<div class="file__date">
+							<div class="file__date-tittle">Date:</div>
+							<div class="last-file__date-value file__date-value"></div>
+						</div>
+						<div class="file__time">
+							<div class="file__time-tittle">Time:</div>
+							<div class="last-file__time-value file__time-value"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="calendar">
+				<div class="calendar__container _container">
+					<div class="calendar__header">
+						<button class="calendar__prev-month"><span></span></button>
+						<h2 class="calendar__current-month"></h2>
+						<button class="calendar__next-month"><span></span></button>
+					</div>
+					<div class="calendar__weekdays">
+						<div>Пн</div>
+						<div>Вт</div>
+						<div>Ср</div>
+						<div>Чт</div>
+						<div>Пт</div>
+						<div>Сб</div>
+						<div>Вс</div>
+					</div>
+					<div class="calendar__days"></div>
+				</div>
+			</div>
+
+			<div class="date-files">
+				<div class="date-files__container _container">
+					<div class="date-files__items _hidden">
+
+					</div>
+
+				</div>
+			</div>
 			<div class="main-subtittle">
 				<p>or</p>
 				<p>choose your ...Results.JSON</p>

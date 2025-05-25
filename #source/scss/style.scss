@@ -678,10 +678,75 @@ body {
 	}
 
 	&__prev-month {
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M6 12H18M6 12L11 7M6 12L11 17' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-		color: #f00;
+		transform: rotate(90deg);
+	}
+
+	&__next-month {
+		transform: rotate(270deg);
+	}
+
+	&__prev-month,
+	&__next-month {
+		background-color: inherit;
+		position: relative;
 		width: 40px;
 		height: 40px;
+
+		&::after,
+		&::before {
+			content: '';
+			width: 3px;
+			height: 20px;
+			position: absolute;
+			top: 12px;
+			background-color: $color-akcent1;
+			transition: transform 0.5s ease, box-shadow 0.3s ease;
+		}
+
+		&:before {
+			transform: rotate(-50deg);
+			left: 12px;
+		}
+
+		&::after {
+			transform: rotate(50deg);
+			right: 12px;
+		}
+
+		@media(hover:hover) {
+			&:hover {
+
+				&::after,
+				&::before {
+					box-shadow: 0px 0px 5px $color-akcent1;
+				}
+			}
+
+			&:active {
+
+				&::after,
+				&::before {
+					transition: transform 0.5s ease, box-shadow 0.1s ease;
+					box-shadow: 0px 0px 5px $color-akcent2;
+				}
+			}
+		}
+
+		@media(hover:none) {
+			&:active {
+
+				&::after,
+				&::before {
+					transition: transform 0.5s ease, box-shadow 0.1s ease;
+					box-shadow: 0px 0px 5px $color-akcent2;
+				}
+			}
+		}
+
+
+
+
+
 	}
 
 	&__current-month {
@@ -692,13 +757,6 @@ body {
 		transition: opacity .15s ease 0s, transform .2s ease 0s;
 	}
 
-	&__next-month {
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M6 12H18M6 12L11 7M6 12L11 17' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-		color: #f00;
-		width: 40px;
-		height: 40px;
-
-	}
 
 	&__weekdays {
 		display: grid;

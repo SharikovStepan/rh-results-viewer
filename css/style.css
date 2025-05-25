@@ -701,10 +701,68 @@ body._lock {
           align-items: center;
 }
 .calendar__prev-month {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M6 12H18M6 12L11 7M6 12L11 17' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-  color: #f00;
+  -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+.calendar__next-month {
+  -webkit-transform: rotate(270deg);
+      -ms-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+.calendar__prev-month, .calendar__next-month {
+  background-color: inherit;
+  position: relative;
   width: 40px;
   height: 40px;
+}
+.calendar__prev-month::after, .calendar__prev-month::before, .calendar__next-month::after, .calendar__next-month::before {
+  content: "";
+  width: 3px;
+  height: 20px;
+  position: absolute;
+  top: 12px;
+  background-color: #45a293;
+  -webkit-transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.3s ease;
+  transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.3s ease;
+  transition: transform 0.5s ease, box-shadow 0.3s ease;
+  transition: transform 0.5s ease, box-shadow 0.3s ease, -webkit-transform 0.5s ease, -webkit-box-shadow 0.3s ease;
+}
+.calendar__prev-month:before, .calendar__next-month:before {
+  -webkit-transform: rotate(-50deg);
+      -ms-transform: rotate(-50deg);
+          transform: rotate(-50deg);
+  left: 12px;
+}
+.calendar__prev-month::after, .calendar__next-month::after {
+  -webkit-transform: rotate(50deg);
+      -ms-transform: rotate(50deg);
+          transform: rotate(50deg);
+  right: 12px;
+}
+@media (hover: hover) {
+  .calendar__prev-month:hover::after, .calendar__prev-month:hover::before, .calendar__next-month:hover::after, .calendar__next-month:hover::before {
+    -webkit-box-shadow: 0px 0px 5px #45a293;
+            box-shadow: 0px 0px 5px #45a293;
+  }
+  .calendar__prev-month:active::after, .calendar__prev-month:active::before, .calendar__next-month:active::after, .calendar__next-month:active::before {
+    -webkit-transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    transition: transform 0.5s ease, box-shadow 0.1s ease;
+    transition: transform 0.5s ease, box-shadow 0.1s ease, -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    -webkit-box-shadow: 0px 0px 5px #66fcf1;
+            box-shadow: 0px 0px 5px #66fcf1;
+  }
+}
+@media (hover: none) {
+  .calendar__prev-month:active::after, .calendar__prev-month:active::before, .calendar__next-month:active::after, .calendar__next-month:active::before {
+    -webkit-transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    transition: -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    transition: transform 0.5s ease, box-shadow 0.1s ease;
+    transition: transform 0.5s ease, box-shadow 0.1s ease, -webkit-transform 0.5s ease, -webkit-box-shadow 0.1s ease;
+    -webkit-box-shadow: 0px 0px 5px #66fcf1;
+            box-shadow: 0px 0px 5px #66fcf1;
+  }
 }
 .calendar__current-month {
   font-size: 22px;
@@ -721,12 +779,6 @@ body._lock {
   transition: opacity 0.15s ease 0s, -webkit-transform 0.2s ease 0s;
   transition: opacity 0.15s ease 0s, transform 0.2s ease 0s;
   transition: opacity 0.15s ease 0s, transform 0.2s ease 0s, -webkit-transform 0.2s ease 0s;
-}
-.calendar__next-month {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M6 12H18M6 12L11 7M6 12L11 17' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-  color: #f00;
-  width: 40px;
-  height: 40px;
 }
 .calendar__weekdays {
   display: grid;
