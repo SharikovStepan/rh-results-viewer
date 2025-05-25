@@ -2580,6 +2580,15 @@ body._lock {
 .all-laps .modal__stat {
   gap: 50px;
 }
+@media (max-width: 510px) {
+  .all-laps__round-count {
+    min-height: 40px;
+  }
+}
+.all-laps__round-count-text {
+  -ms-flex-item-align: center;
+      align-self: center;
+}
 .all-laps__round-count-value {
   text-align: center;
 }

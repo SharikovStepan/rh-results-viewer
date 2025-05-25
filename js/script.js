@@ -4716,6 +4716,7 @@ function pilotsVsShow(allLaps) {
 
 	}, 1400);
 	setTimeout(() => {
+
 		element.container.classList.remove('_no-event')
 		element.lapsArea.classList.remove('_lock')
 		element.stats.classList.remove('_hidden-stats');
